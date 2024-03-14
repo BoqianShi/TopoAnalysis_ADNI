@@ -26,9 +26,10 @@ def bd_decomposition(adj):
     nonmst = adj - mst
     return mst, nonmst
 
-def compute_birth_death_sets(adj):
+def compute_birth_sets(mst):
     """
-    Computes birth and death sets of a network.
+    Computes birth sets of a network.
+    Representing components in the networks.
 
     Args:
         adj (numpy.ndarray): Adjacency matrix of the network.
@@ -36,23 +37,72 @@ def compute_birth_death_sets(adj):
     Returns:
         tuple: A tuple containing the sorted birth set and the sorted death set.
     """
-    mst, nonmst = bd_decomposition(adj)
     birth_ind = np.nonzero(mst)
-    death_ind = np.nonzero(nonmst)
-    return np.sort(mst[birth_ind]), np.sort(nonmst[death_ind])
+    # death_ind = np.nonzero(nonmst)
+    return np.sort(mst[birth_ind])
 
-def get_barcode(adj):
+def compute_death_sets(nonmst):
     """
-    Computes the barcode representation of a network.
+    Computes birth sets of a network.
+    Representing components in the networks.
 
     Args:
         adj (numpy.ndarray): Adjacency matrix of the network.
 
     Returns:
+        tuple: A tuple containing the sorted birth set and the sorted death set.
+    """
+    # birth_ind = np.nonzero(mst)
+    death_ind = np.nonzero(nonmst)
+    return np.sort(nonmst[death_ind])
+
+
+def set_mode(adj, mode='original'):
+    """
+    Set mode for the adjacaency matrix.
+
+    Args:
+        adj (numpy.ndarray): Adjacency matrix of the network.
+        mode (str): Mode of processing the barcode.
+            'original': Use the original adjacency matrix.
+            'ignore_negative': Ignore negative values in the adjacency matrix.
+            'absolute': Take the absolute values of the adjacency matrix.
+
+    Returns:
+        list: A list containing the birth and death sets of the network.
+    """
+    if mode == 'ignore_negative':
+        adj = np.where(adj < 0, 0, adj)
+    elif mode == 'absolute':
+        adj = np.abs(adj)
+
+    return adj
+
+def get_barcode(adj, mode = "cycles", barcode_mode = "ignore_negative"):
+    """
+    Computes the barcode representation of a network.
+
+    Args:
+        adj (numpy.ndarray): Adjacency matrix of the network.
+        mode (string): Use components, cycles, or attached methods to generate barcode
+            options: 1. "components"
+                     2. "cycles"
+                     3. "attached"
+
+    Returns:
         list: A list containing the birth and death sets of the network.
     """
     X = []
-    X.append(compute_birth_death_sets(adj))
+    adj = set_mode(adj, barcode_mode)
+    mst, nonmst = bd_decomposition(adj)
+    if mode == "cycle":
+        X.append(compute_death_sets(nonmst))
+    elif mode == "components":
+        X.append(compute_birth_sets(mst))
+    elif mode == "attached":
+        X.append(compute_birth_sets(mst), compute_death_sets(nonmst))
+    else:
+        print("invalid mode in barcode generation")
     return X
 
 def plot_barcode(births, deaths, title="Barcode"):
