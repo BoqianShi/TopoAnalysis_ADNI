@@ -40,6 +40,11 @@ def load_content():
             print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
         else:
             print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
+    
+    
+    if config.label_mode == "binary":
+        subject_manager.set_binary_label()
+
 
     return subject_manager
 
@@ -68,7 +73,7 @@ def plot_single_barcode(subject):
 if __name__ == '__main__':
     subject_manager = load_content()
     generate_barcode(subject_manager=subject_manager)
-
+    
 
 
     if config.debug == 1:

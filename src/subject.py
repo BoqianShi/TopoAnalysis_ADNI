@@ -105,6 +105,16 @@ class SubjectLoader:
         for subject in self.subjects:
             subject.load_data(config.data_dir)
 
+    def binary_label(self):
+        """
+        Convert the label to binary.
+        """
+        for subject in self.subjects:
+            if subject.group == 'AD' or subject.group == 'EMCI':
+                subject.group = 1
+            else:
+                subject.group = 0
+
 
     def get_subject_by_id(self, subject_id):
         """
@@ -132,17 +142,3 @@ class SubjectLoader:
             list: List of Subject objects belonging to the specified group.
         """
         return [subject for subject in self.subjects if subject.group == group]
-    
-    def get_subjects_by_id(self, ID):
-        """
-        Retrieves a list of subject objects belonging to a specific ID.
-
-        Args:
-            ID (str): ID name.
-
-        Returns:
-            list: List of Subject objects belonging to the specified ID.
-        """
-        for subject in self.subjects:
-            if subject.subject_id == ID:
-                return subject

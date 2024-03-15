@@ -1,4 +1,7 @@
 # config.py
+# Configuration file for the project
+# Author: Boqian Shi
+# Store all the global variables and configurations here
 
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
@@ -17,6 +20,12 @@ barcode_mode = "cycle"
 #          2. "ignore_negative"
 #          3. "absolute"
 adj_mode = "ignore_negative"
+
+
+# Label mode
+# options: 1. "original"
+#          2. "binary"
+label_mode = "binary"
 
 # Directory containing the subject data files
 data_dir = './data'
