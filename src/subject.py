@@ -15,6 +15,7 @@ class Subject:
         self.sex = None
         self.age = None
         self.data = None
+        self.barcode = None
 
     def load_data(self, data_dir):
         """
@@ -27,6 +28,15 @@ class Subject:
         file_path = os.path.join(data_dir, file_name)
         if os.path.exists(file_path):
             self.data = np.load(file_path)
+
+    def set_barcode(self, barcode):
+        """
+        Sets the barcode representation of the network for the subject.
+
+        Args:
+            barcode (numpy.ndarray): Barcode representation of the network.
+        """
+        self.barcode = barcode
 
     def __str__(self):
         return f"Subject ID: {self.subject_id}, Group: {self.group}"
@@ -122,3 +132,17 @@ class SubjectLoader:
             list: List of Subject objects belonging to the specified group.
         """
         return [subject for subject in self.subjects if subject.group == group]
+    
+    def get_subjects_by_id(self, ID):
+        """
+        Retrieves a list of subject objects belonging to a specific ID.
+
+        Args:
+            ID (str): ID name.
+
+        Returns:
+            list: List of Subject objects belonging to the specified ID.
+        """
+        for subject in self.subjects:
+            if subject.subject_id == ID:
+                return subject

@@ -3,6 +3,7 @@
 # Author: Boqian Shi
 
 import numpy as np
+import config
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree
 from matplotlib import pyplot as plt
@@ -26,7 +27,7 @@ def bd_decomposition(adj):
     nonmst = adj - mst
     return mst, nonmst
 
-def compute_birth_sets(mst):
+def compute_mst_sets(mst):
     """
     Computes birth sets of a network.
     Representing components in the networks.
@@ -41,7 +42,7 @@ def compute_birth_sets(mst):
     # death_ind = np.nonzero(nonmst)
     return np.sort(mst[birth_ind])
 
-def compute_death_sets(nonmst):
+def compute_nonmst_sets(nonmst):
     """
     Computes birth sets of a network.
     Representing components in the networks.
@@ -78,7 +79,7 @@ def set_mode(adj, mode='original'):
 
     return adj
 
-def get_barcode(adj, mode = "cycles", barcode_mode = "ignore_negative"):
+def get_barcode(adj, barcode_mode = "cycle", adj_mode = "ignore_negative"):
     """
     Computes the barcode representation of a network.
 
@@ -92,30 +93,57 @@ def get_barcode(adj, mode = "cycles", barcode_mode = "ignore_negative"):
     Returns:
         list: A list containing the birth and death sets of the network.
     """
-    X = []
-    adj = set_mode(adj, barcode_mode)
+    adj = set_mode(adj, adj_mode)
     mst, nonmst = bd_decomposition(adj)
-    if mode == "cycle":
-        X.append(compute_death_sets(nonmst))
-    elif mode == "components":
-        X.append(compute_birth_sets(mst))
-    elif mode == "attached":
-        X.append(compute_birth_sets(mst), compute_death_sets(nonmst))
+    # Cycle number 64261
+    if barcode_mode == "cycle":
+        return compute_nonmst_sets(nonmst)
+    # Component number 359
+    elif barcode_mode == "component":
+        return compute_mst_sets(mst)
+    # Attached number 64620
+    elif barcode_mode == "attached":
+        return np.concatenate((compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
     else:
         print("invalid mode in barcode generation")
-    return X
 
-def plot_barcode(births, deaths, title="Barcode"):
+# Every connected component has a death value at ∞
+# In this case, we set it to 1 for better visualization
+def plot_component_barcode(births, title="Component Barcode"):
     """
-    Plots the barcode representation of a network.
+    Plots the component barcode representation of a network.
 
     Args:
         births (numpy.ndarray): Array of birth values.
-        deaths (numpy.ndarray): Array of death values.
-        title (str, optional): Title of the plot. Defaults to "Barcode".
+        title (str, optional): Title of the plot. Defaults to "Component Barcode".
     """
     plt.figure(figsize=(10, 5))  # Increased figure size for clarity
-    for i, (birth, death) in enumerate(zip(births, deaths)):
+    for i, birth in enumerate(births):
+        plt.plot([birth, 1], [i, i], 'k', lw=0.5, alpha=0.5)  # Decreased line width and added transparency
+    plt.title(title)
+    plt.xlabel("Feature Lifetime")
+    plt.ylabel("Feature Index")
+    plt.grid(True)
+    plt.yticks([])  # Remove y-ticks for clarity
+    plt.tight_layout()  # Adjust layout to fit the figure size
+    plt.show()
+
+# Cycles in the graph filtration are all considered born at −∞
+# In this case, we set it to 0 or -1 for better visualization
+def plot_cycle_barcode(deaths, title="Cycle Barcode"):
+    """
+    Plots the cycle barcode representation of a network.
+
+    Args:
+        deaths (numpy.ndarray): Array of death values.
+        title (str, optional): Title of the plot. Defaults to "Cycle Barcode".
+    """
+    plt.figure(figsize=(10, 5))  # Increased figure size for clarity
+    for i, death in enumerate(deaths):
+        if config.adj_mode == "ignore_negative" or config.adj_mode == "absolute":
+            birth = 0
+        elif config.adj_mode == "original":
+            birth = -1
         plt.plot([birth, death], [i, i], 'k', lw=0.5, alpha=0.5)  # Decreased line width and added transparency
     plt.title(title)
     plt.xlabel("Feature Lifetime")
