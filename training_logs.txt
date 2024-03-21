@@ -92,3 +92,10 @@
 2024-03-21 12:29:00 - Learning Rate: 0.1, Top Relative Weight: 0.91, Purity Score: 0.7008547008547008
 2024-03-21 12:32:50 - Learning Rate: 0.1, Top Relative Weight: 0.92, Purity Score: 0.5897435897435898
 2024-03-21 12:38:10 - Learning Rate: 0.1, Top Relative Weight: 0.93, Purity Score: 0.5982905982905983
+2024-03-21 12:42:44 - Learning Rate: 0.1, Top Relative Weight: 0.9400000000000001, Purity Score: 0.6239316239316239
+2024-03-21 12:46:18 - Learning Rate: 0.1, Top Relative Weight: 0.95, Purity Score: 0.5726495726495726
+2024-03-21 12:50:51 - Learning Rate: 0.1, Top Relative Weight: 0.96, Purity Score: 0.6068376068376068
+2024-03-21 12:57:13 - Learning Rate: 0.1, Top Relative Weight: 0.97, Purity Score: 0.5811965811965812
+2024-03-21 13:04:27 - Learning Rate: 0.1, Top Relative Weight: 0.98, Purity Score: 0.5897435897435898
+2024-03-21 13:12:38 - Learning Rate: 0.1, Top Relative Weight: 0.99, Purity Score: 0.6324786324786325
+2024-03-21 13:12:38 - Best Configuration -> Learning Rate: 0.1, Top Relative Weight: 0.91, Highest Purity Score: 0.7008547008547008

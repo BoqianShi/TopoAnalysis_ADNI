@@ -2,11 +2,17 @@
 
 ## Project Overview
 
+This is Boqian Shi's Master's project.
+
 This project aims to utilize topological data analysis (TDA) to uncover patterns and anomalies in brain networks associated with Alzheimer's Disease (AD) progression, using functional Magnetic Resonance Imaging (fMRI) data from the Alzheimer's Disease Neuroimaging Initiative (ADNI) database. Our goal is to identify significant functional connections and network organizations correlating with Alzheimer's Disease, thereby enhancing our understanding of AD and paving the way for advancements in fMRI classification.
 
 ### Author
 
 Boqian Shi
+
+Duke University
+
+Master of Science in Computer Science
 
 ### Date
 

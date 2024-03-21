@@ -81,8 +81,8 @@ def grid_search():
                         format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     # Define the range of values for learning_rate and top_relative_weight
-    learning_rates = np.linspace(0.01, 0.1, 10)  # Example: from 0.01 to 0.1, 10 values
-    top_relative_weights = np.linspace(0.9, 0.99, 10)  # Example: from 0.9 to 0.99, 10 values
+    learning_rates = np.linspace(0.01, 0.2, 10)  # Example: from 0.01 to 0.1, 10 values
+    top_relative_weights = np.linspace(0, 0.99, 10)  # Example: from 0.9 to 0.99, 10 values
 
     # Variables for tracking the best configuration
     best_purity = 0
@@ -129,8 +129,8 @@ if __name__ == '__main__':
 
 
     # Topological clustering variables
-    n_clusters = 10
-    top_relative_weight = 0.98  # 'top_relative_weight' between 0 and 1
+    n_clusters = 2
+    top_relative_weight = 0.5  # 'top_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
