@@ -1,8 +1,4 @@
-Here's your revised `README.md` with added information about using `config.py` to control the program, making it easier for users to understand how to customize the analysis according to their needs:
-
----
-
-# Investigating Alzheimer's Disease Progression Through Topological Analysis of ADNI fMRI Data
+# Topological Analysis on ADNI fMRI Data for Investigating Alzheimer's Disease Progression
 
 ## Project Overview
 
