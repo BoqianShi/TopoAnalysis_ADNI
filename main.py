@@ -129,7 +129,13 @@ if __name__ == '__main__':
 
 
     # Topological clustering variables
-    n_clusters = 2
+    
+    if config.label_mode == "binary":
+        n_clusters = 2
+    else:
+        n_clusters = 4
+
+        
     top_relative_weight = 0.5  # 'top_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300

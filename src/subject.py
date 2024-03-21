@@ -115,6 +115,22 @@ class SubjectLoader:
             else:
                 subject.group = 0
 
+    def original_label(self):
+        """
+        Convert the label to binary.
+        """
+        for subject in self.subjects:
+            if subject.group == 'AD':
+                subject.group = 0
+            elif subject.group == 'EMCI':
+                subject.group = 1
+            elif subject.group == 'LMCI' or subject.group == 'MCI':
+                subject.group = 2
+            elif subject.group == 'CN':
+                subject.group = 3
+            else:
+                print("Error: Label mismatched on subject: ", subject.id, " Please check the label.")
+
 
     def get_subject_by_id(self, subject_id):
         """
