@@ -1,3 +1,8 @@
+# clustering.py
+# Contains the clustering class that is used to perform topological clustering on the network data.
+# Author: Boqian Shi
+
+
 import numpy as np
 import config
 import src.barcode
@@ -72,6 +77,7 @@ class clustering:
                 sample_mean[np.triu_indices(sample_mean.shape[0],
                                             k=1)] = cluster_mean[:n_edges]
                 top_centroid = cluster_mean[n_edges:]
+                
                 top_centroid_birth_set = top_centroid[:n_births]
                 top_centroid_death_set = top_centroid[n_births:]
 
@@ -80,8 +86,7 @@ class clustering:
                 cluster_centroid = self._top_interpolation(
                         prev_centroid, sample_mean, top_centroid_birth_set,
                         top_centroid_death_set)
-                self.centroids[cluster] = self._vectorize_geo_top_info(
-                        cluster_centroid)
+                self.centroids[cluster] = src.barcode.get_barcode(cluster_centroid)
                 #except:
                 #    print(
                 #        'Error: Possibly due to the learning rate is not within appropriate range.'
@@ -135,9 +140,8 @@ class clustering:
             # Topological term gradient
             sorted_birth_ind, sorted_death_ind = self._compute_optimal_matching(
                 curr)
-            # print(sorted_birth_ind)
             top_gradient = np.zeros_like(curr)
-            # print(top_gradient.shape)
+            
             top_gradient[sorted_birth_ind] = top_centroid_birth_set
             top_gradient[sorted_death_ind] = top_centroid_death_set
             top_gradient = 2 * (curr - top_gradient)

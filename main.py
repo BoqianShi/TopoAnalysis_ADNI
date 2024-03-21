@@ -89,17 +89,24 @@ if __name__ == '__main__':
     
     # Topological clustering variables
     n_clusters = 10
-    top_relative_weight = 0.99  # 'top_relative_weight' between 0 and 1
+    top_relative_weight = 0.98  # 'top_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
     clustering_model = src.clustering.clustering(subject_manager, n_clusters, top_relative_weight, max_iter_alt,
                                 max_iter_interp,
                                 learning_rate)
-    labels_pred = clustering_model.fit_predict()   
+    #labels_pred = clustering_model.fit_predict()   
     labels_true = subject_manager.get_labels()
-    print('Purity score:', purity_score(labels_true, labels_pred))
+    #print('Purity score:', purity_score(labels_true, labels_pred))
     
+
+
+
+
+
+
+
 
 
     # Single test flag for single subject testing

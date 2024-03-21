@@ -107,8 +107,9 @@ def get_barcode(adj, barcode_mode = "cycle", adj_mode = "ignore_negative"):
             return np.concatenate((compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
         else:
             print("invalid mode in barcode generation in topo-only mode")
-    else:
-        print("geo mode not supported at this point")
+    else: 
+        vec = adj[np.triu_indices(adj.shape[0], k=1)]
+        return np.concatenate((vec, compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
 
 
 

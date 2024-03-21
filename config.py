@@ -10,6 +10,8 @@ groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
 num_subjects = 117
 
 # Barcode mode
+# Controls the way the barcode is computed
+# attached mode: component + cycle
 # options: 1. "component" 
 #          2. "cycle"
 #          3. "attached"
@@ -22,9 +24,10 @@ barcode_mode = "attached"
 adj_mode = "ignore_negative"
 
 # Geometry mode
+# Controls the way the geometric information is included
 # options: 1. "geo_included" -  geometric info included
 #          2. "topo" -  geometric info excluded
-geo_mode = "topo"
+geo_mode = "geo_included"
 
 
 # Label mode
