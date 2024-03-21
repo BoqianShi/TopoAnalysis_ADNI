@@ -85,8 +85,4 @@ To modify the analysis, edit the `config.py` file's variables according to your 
 
 ## Acknowledgments
 
-This project utilizes data from the Alzheimer's Disease Neuroimaging Initiative (ADNI), and we acknowledge their invaluable contribution to Alzheimer's Disease research.
-
----
-
-This revised README incorporates a new section on configuring the program using `config.py`, making it clearer how users can tailor the analysis to their specific needs.
+This project utilizes data from the Alzheimer's Disease Neuroimaging Initiative (ADNI), and we acknowledge their invaluable contribution to Alzheimer's Disease research. Special thanks to Mr. Alireza Fathian and Prof. Yousef Jamali for providing referencing data; their paper "The trend of disruption in the functional brain network topology of Alzheimer’s disease" ([Nature](https://www.nature.com/articles/s41598-022-18987-y)) has greatly inspired the pre-processing steps undertaken in this project. Additionally, we are grateful for the guidance and resources provided by my advisor, Prof. Songdechakraiwut, particularly the code for topological clustering available at [topo-clustering](https://github.com/topolearn/topo-clustering). Their contributions have been instrumental in shaping the methodologies and analyses employed in our investigation.
