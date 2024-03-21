@@ -2,6 +2,7 @@
 # The main function that handles all the scripts and functions
 # Author: Boqian Shi
 
+import logging
 import math
 import config
 import src.clustering
@@ -74,6 +75,45 @@ def purity_score(labels_true, labels_pred):
     mtx = contingency_matrix(labels_true, labels_pred)
     return np.sum(np.amax(mtx, axis=0)) / np.sum(mtx)
 
+def grid_search():
+    # Setup logging
+    logging.basicConfig(filename='training_logs.txt', level=logging.INFO, 
+                        format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+    # Define the range of values for learning_rate and top_relative_weight
+    learning_rates = np.linspace(0.01, 0.1, 10)  # Example: from 0.01 to 0.1, 10 values
+    top_relative_weights = np.linspace(0.9, 0.99, 10)  # Example: from 0.9 to 0.99, 10 values
+
+    # Variables for tracking the best configuration
+    best_purity = 0
+    best_lr = 0
+    best_trw = 0
+    labels_true = subject_manager.get_labels()
+
+    # Loop over all combinations of learning_rate and top_relative_weight
+    for lr in learning_rates:
+        for trw in top_relative_weights:
+            # Setup and train the clustering model with the current parameters
+            clustering_model = src.clustering.clustering(subject_manager, n_clusters, trw, max_iter_alt,
+                                                        max_iter_interp, lr)
+            labels_pred = clustering_model.fit_predict()
+
+            # Calculate the purity score
+            current_purity = purity_score(labels_true, labels_pred)
+            logging.info(f'Learning Rate: {lr}, Top Relative Weight: {trw}, Purity Score: {current_purity}')
+
+            # Update best parameters if current configuration is better
+            if current_purity > best_purity:
+                best_purity = current_purity
+                best_lr = lr
+                best_trw = trw
+
+    # Log the best configuration
+    logging.info(f'Best Configuration -> Learning Rate: {best_lr}, Top Relative Weight: {best_trw}, Highest Purity Score: {best_purity}')
+
+    print(f'Best Configuration -> Learning Rate: {best_lr}, Top Relative Weight: {best_trw}, Highest Purity Score: {best_purity}')
+
+
 
 if __name__ == '__main__':
     print("Running on barcode mode: ", config.barcode_mode)
@@ -86,29 +126,24 @@ if __name__ == '__main__':
 
     # Generate barcode representation of the network
     generate_barcode(subject_manager=subject_manager)    
-    
+
+
     # Topological clustering variables
     n_clusters = 10
     top_relative_weight = 0.98  # 'top_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
+    grid_search()
+
+    # single train below
     clustering_model = src.clustering.clustering(subject_manager, n_clusters, top_relative_weight, max_iter_alt,
                                 max_iter_interp,
                                 learning_rate)
-    #labels_pred = clustering_model.fit_predict()   
-    labels_true = subject_manager.get_labels()
-    #print('Purity score:', purity_score(labels_true, labels_pred))
+    # labels_pred = clustering_model.fit_predict()   
+    # labels_true = subject_manager.get_labels()
+    # print('Purity score:', purity_score(labels_true, labels_pred))
     
-
-
-
-
-
-
-
-
-
     # Single test flag for single subject testing
     single_test = 0
     if single_test == 1:
