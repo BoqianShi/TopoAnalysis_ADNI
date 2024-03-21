@@ -142,3 +142,12 @@ class SubjectLoader:
             list: List of Subject objects belonging to the specified group.
         """
         return [subject for subject in self.subjects if subject.group == group]
+
+    def get_labels(self):
+        """
+        Retrieves the labels of the subjects.
+
+        Returns:
+            list: List of labels of the subjects.
+        """
+        return [subject.group for subject in self.subjects]

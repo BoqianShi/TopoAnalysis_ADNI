@@ -13,13 +13,18 @@ num_subjects = 117
 # options: 1. "component" 
 #          2. "cycle"
 #          3. "attached"
-barcode_mode = "cycle"
+barcode_mode = "attached"
 
 # adjacancy matrix mode
 # options: 1. "original"
 #          2. "ignore_negative"
 #          3. "absolute"
 adj_mode = "ignore_negative"
+
+# Geometry mode
+# options: 1. "geo_included" -  geometric info included
+#          2. "topo" -  geometric info excluded
+geo_mode = "topo"
 
 
 # Label mode

@@ -95,17 +95,23 @@ def get_barcode(adj, barcode_mode = "cycle", adj_mode = "ignore_negative"):
     """
     adj = set_mode(adj, adj_mode)
     mst, nonmst = bd_decomposition(adj)
-    # Cycle number 64261
-    if barcode_mode == "cycle":
-        return compute_nonmst_sets(nonmst)
-    # Component number 359
-    elif barcode_mode == "component":
-        return compute_mst_sets(mst)
-    # Attached number 64620
-    elif barcode_mode == "attached":
-        return np.concatenate((compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
+    if config.geo_mode == "topo":
+        # Cycle number 64261
+        if barcode_mode == "cycle":
+            return compute_nonmst_sets(nonmst)
+        # Component number 359
+        elif barcode_mode == "component":
+            return compute_mst_sets(mst)
+        # Attached number 64620
+        elif barcode_mode == "attached":
+            return np.concatenate((compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
+        else:
+            print("invalid mode in barcode generation in topo-only mode")
     else:
-        print("invalid mode in barcode generation")
+        print("geo mode not supported at this point")
+
+
+
 
 # Every connected component has a death value at ∞
 # In this case, we set it to 1 for better visualization
