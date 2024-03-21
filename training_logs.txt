@@ -99,3 +99,4 @@
 2024-03-21 13:04:27 - Learning Rate: 0.1, Top Relative Weight: 0.98, Purity Score: 0.5897435897435898
 2024-03-21 13:12:38 - Learning Rate: 0.1, Top Relative Weight: 0.99, Purity Score: 0.6324786324786325
 2024-03-21 13:12:38 - Best Configuration -> Learning Rate: 0.1, Top Relative Weight: 0.91, Highest Purity Score: 0.7008547008547008
+2024-03-21 15:12:53 - Best ARI: 0.03942464132911535 with Learning Rate: 0.1577777777777778 and Top Relative Weight: 0.4955555555555555

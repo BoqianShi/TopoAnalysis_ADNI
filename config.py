@@ -33,7 +33,7 @@ geo_mode = "geo_included"
 # Label mode
 # options: 1. "original"
 #          2. "binary"
-label_mode = "binary"
+label_mode = "original"
 
 # Directory containing the subject data files
 data_dir = './data'

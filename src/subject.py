@@ -129,7 +129,7 @@ class SubjectLoader:
             elif subject.group == 'CN':
                 subject.group = 3
             else:
-                print("Error: Label mismatched on subject: ", subject.id, " Please check the label.")
+                print("Error: Label mismatched on subject: ", subject.subject_id, " Please check the label.")
 
 
     def get_subject_by_id(self, subject_id):

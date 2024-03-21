@@ -10,6 +10,10 @@ from src.subject import Subject, SubjectLoader
 from src.barcode import get_barcode, plot_cycle_barcode, plot_component_barcode
 import numpy as np
 from sklearn.metrics.cluster import contingency_matrix
+from sklearn.metrics import adjusted_rand_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 # Write subject information into new CSV file
 # Do not use this function unless you want to overwrite the current CSV file
@@ -48,6 +52,8 @@ def load_content():
     
     if config.label_mode == "binary":
         subject_manager.binary_label()
+    else:
+        subject_manager.original_label()
 
 
     return subject_manager
@@ -75,44 +81,55 @@ def purity_score(labels_true, labels_pred):
     mtx = contingency_matrix(labels_true, labels_pred)
     return np.sum(np.amax(mtx, axis=0)) / np.sum(mtx)
 
-def grid_search():
+
+def grid_search(subject_manager):
+    # Default variables
+    max_iter_alt = 300
+    max_iter_interp = 300
+    if config.label_mode == "binary":
+        n_clusters = 2
+    else:
+        n_clusters = 4
+
     # Setup logging
     logging.basicConfig(filename='training_logs.txt', level=logging.INFO, 
                         format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     # Define the range of values for learning_rate and top_relative_weight
-    learning_rates = np.linspace(0.01, 0.2, 10)  # Example: from 0.01 to 0.1, 10 values
-    top_relative_weights = np.linspace(0, 0.99, 10)  # Example: from 0.9 to 0.99, 10 values
+    learning_rate_range = np.linspace(0.01, 0.2, 10)  # From 0.01 to 0.2
+    top_relative_weight_range = np.linspace(0.1, 0.99, 10)  # From 0.1 to 0.99
 
-    # Variables for tracking the best configuration
-    best_purity = 0
-    best_lr = 0
-    best_trw = 0
     labels_true = subject_manager.get_labels()
+    best_ari = -1  # Start with the worst possible score
+    best_params = None
+    results = np.zeros((len(learning_rate_range), len(top_relative_weight_range)))  # To store ARI scores
 
-    # Loop over all combinations of learning_rate and top_relative_weight
-    for lr in learning_rates:
-        for trw in top_relative_weights:
-            # Setup and train the clustering model with the current parameters
-            clustering_model = src.clustering.clustering(subject_manager, n_clusters, trw, max_iter_alt,
-                                                        max_iter_interp, lr)
+    for i, lr in enumerate(learning_rate_range):
+        for j, trw in enumerate(top_relative_weight_range):
+            labels_pred = np.random.randint(0, 2, len(labels_true))  # Example random predictions
+            clustering_model = src.clustering.clustering(subject_manager, n_clusters, trw, max_iter_alt, max_iter_interp, lr)
             labels_pred = clustering_model.fit_predict()
-
-            # Calculate the purity score
-            current_purity = purity_score(labels_true, labels_pred)
-            logging.info(f'Learning Rate: {lr}, Top Relative Weight: {trw}, Purity Score: {current_purity}')
-
-            # Update best parameters if current configuration is better
-            if current_purity > best_purity:
-                best_purity = current_purity
-                best_lr = lr
-                best_trw = trw
+            ari_score = adjusted_rand_score(labels_true, labels_pred)
+            results[i, j] = ari_score
+            
+            if ari_score > best_ari:
+                best_ari = ari_score
+                best_params = (lr, trw)
+            print(f"Learning Rate: {lr}, Top Relative Weight: {trw}, ARI: {ari_score}")
 
     # Log the best configuration
-    logging.info(f'Best Configuration -> Learning Rate: {best_lr}, Top Relative Weight: {best_trw}, Highest Purity Score: {best_purity}')
+    logging.info(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
+    print(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
+    
+    # Visualization
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(results, xticklabels=np.round(top_relative_weight_range, 2), yticklabels=np.round(learning_rate_range, 2), annot=True, fmt=".2f", cmap="viridis")
+    plt.title('Grid Search Results (ARI Score)')
+    plt.xlabel('Top Relative Weight')
+    plt.ylabel('Learning Rate')
+    plt.show()
 
-    print(f'Best Configuration -> Learning Rate: {best_lr}, Top Relative Weight: {best_trw}, Highest Purity Score: {best_purity}')
-
+    return best_params, best_ari
 
 
 if __name__ == '__main__':
@@ -121,45 +138,31 @@ if __name__ == '__main__':
     # Load subject information from CSV file
     subject_manager = load_content()
 
-
-
-
     # Generate barcode representation of the network
     generate_barcode(subject_manager=subject_manager)    
 
 
     # Topological clustering variables
-    
     if config.label_mode == "binary":
         n_clusters = 2
     else:
         n_clusters = 4
 
-        
-    top_relative_weight = 0.5  # 'top_relative_weight' between 0 and 1
+    top_relative_weight = 0.99  # 'top_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
-    grid_search()
+    grid_search(subject_manager)
 
-    # single train below
-    clustering_model = src.clustering.clustering(subject_manager, n_clusters, top_relative_weight, max_iter_alt,
-                                max_iter_interp,
-                                learning_rate)
-    # labels_pred = clustering_model.fit_predict()   
-    # labels_true = subject_manager.get_labels()
-    # print('Purity score:', purity_score(labels_true, labels_pred))
-    
-    # Single test flag for single subject testing
+    # Single test flag for single parameter testing
     single_test = 0
     if single_test == 1:
-        # Plot barcode for a specific subject
-        subject_130_S_4984 = subject_manager.get_subject_by_id("130S4984")
-        # print(subject_130_S_4984)
-        #plot_single_barcode(subject_130_S_4984)
-        data = np.asarray(subject_130_S_4984.data)
-        n_node = data.shape[1]
-        n_edges = math.factorial(n_node) // math.factorial(2) // math.factorial(
-                n_node - 2)  # n_edges = (n_node choose 2)
-        #n_births = n_node - 1
-        print(n_node)
+        clustering_model = src.clustering.clustering(subject_manager, n_clusters, top_relative_weight, max_iter_alt,
+                                    max_iter_interp,
+                                    learning_rate)
+        labels_pred = clustering_model.fit_predict()
+        labels_true = subject_manager.get_labels()
+
+        # Use Adjusted Rand Index
+        ari_score = adjusted_rand_score(labels_true, labels_pred)
+        print('Adjusted Rand Index:', ari_score)

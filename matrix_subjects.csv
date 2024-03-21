@@ -70,7 +70,7 @@ participant_id,group,data_file
 041S0679,MCI,./data\sub-041S0679_ds-36p_corr-pearson.npy
 041S1418,MCI,./data\sub-041S1418_ds-36p_corr-pearson.npy
 041S4200,CN,./data\sub-041S4200_ds-36p_corr-pearson.npy
-041S4510,LCMI,./data\sub-041S4510_ds-36p_corr-pearson.npy
+041S4510,LMCI,./data\sub-041S4510_ds-36p_corr-pearson.npy
 041S4513,EMCI,./data\sub-041S4513_ds-36p_corr-pearson.npy
 041S4974,EMCI,./data\sub-041S4974_ds-36p_corr-pearson.npy
 041S6159,CN,./data\sub-041S6159_ds-36p_corr-pearson.npy
