@@ -44,18 +44,38 @@ This Master's project by Boqian Shi utilizes topological data analysis (TDA) to 
 
 ## Configuration with `config.py`
 
-`config.py` is the central configuration file for this project, enabling customization of the analysis process. Here’s a breakdown of key parameters you can adjust:
+`config.py` serves as the central configuration file for customizing the analysis process. It allows users to specify various parameters that control how data is processed and analyzed. Here's how you can use `config.py`:
 
-- **Group Names:** Define subject groups (`AD`, `CN`, `LMCI`, `EMCI`, `MCI`).
-- **Number of Subjects:** Specify total subjects to analyze.
-- **Barcode Mode:** Choose computation mode (`component`, `cycle`, `attached`) for topological features.
-- **Adjacency Matrix Mode:** Handle adjacency matrix (`original`, `ignore_negative`, `absolute`).
-- **Geometry Mode:** Include geometric info (`geo_included`) or focus on topology (`topo`).
-- **Label Mode:** Set label configuration (`original`, `binary`).
-- **Data Directory & Subject CSV File:** Specify locations for data files and subject information.
-- **Debug Flag:** Enable/disable debug mode for additional logging.
+- **Group Names**: Define the groups of subjects (`AD`, `CN`, `LMCI`, `EMCI`, `MCI`) to include in the analysis.
 
-For detailed instructions on configuring these parameters, refer to the comments within `config.py`.
+- **Number of Subjects**: Set the total number of subjects to analyze.
+
+- **Barcode Mode**: Choose the barcode computation mode (`component`, `cycle`, `attached`) to tailor the topological features extracted.
+    - **component**: Only use 0th Betti (which are the components) to perform the similarity matching.
+    - **cycle**: Only use 1th Betti (which are the cycles) to perform the similarity matching.
+    - **attached**: Simply attach the components and cycles together by:
+        > attached = component + cycle
+
+- **Adjacency Matrix Mode**: Select how to handle the adjacency matrix (`original`, `ignore_negative`, `absolute`) for network construction.
+    - **original**: Use original adjacency matrix.
+    - **ignore_negative**: Simply remove all the negative values.
+    - **absolute**: Use absolute values for all the values to get a new matrix.
+
+- **Geometry Mode**: Decide whether to include geometric information (`geo_included`) or focus solely on topological aspects (`topo`).
+    - **geo_included**: Use geometry information.
+    - **topo**: Only use topological information (components and cycles).
+
+- **Label Mode**: Specify label configuration (`original`, `binary`) for your dataset.
+    - **original**: Use 5 groups to recognize.
+    - **binary**: If *AD* or *ECMI*, label = 1, else label = 0.
+
+- **Data Directory**: Indicate the directory where subject data files are located.
+
+- **Subject CSV File**: Provide the path to the CSV file containing subject information.
+
+- **Debug Flag**: Enable (`1`) or disable (`0`) debug mode for additional logging and diagnostics.
+
+To modify the analysis, edit the `config.py` file's variables according to your needs and preferences. This flexibility allows for a customized analysis approach tailored to the specificities of your dataset and research objectives.
 
 ## Quick Start Guide
 
