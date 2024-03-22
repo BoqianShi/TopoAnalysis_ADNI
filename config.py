@@ -4,9 +4,11 @@
 # Store all the global variables and configurations here
 
 # Separation mode
-# 1. AD + MCI + LMCI vs CN + EMCI
-# 2. AD vs CN (ignore the rest)
-
+# 1. mixed_separation:
+#    AD + MCI + LMCI vs CN + EMCI
+# 2. strict_binary:
+#    AD vs CN (ignore the rest)
+separation_mode = "mixed_separation"
 
 
 # Group names

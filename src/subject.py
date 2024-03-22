@@ -105,6 +105,17 @@ class SubjectLoader:
         for subject in self.subjects:
             subject.load_data(config.data_dir)
 
+    def strict_binary_label(self):
+        """
+        Discard all EMCI, MCI, LMCI subjects.
+        """
+        temp = []
+        for subject in self.subjects:
+            if subject.group != 'MCI' and subject.group != 'EMCI' and subject.group != 'LMCI':
+                temp.append(subject)
+        self.subjects = temp
+
+
     def binary_label(self):
         """
         Convert the label to binary.

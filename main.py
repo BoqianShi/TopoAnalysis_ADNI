@@ -14,6 +14,7 @@ from sklearn.metrics import adjusted_rand_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from datetime import datetime
 
 # Write subject information into new CSV file
 # Do not use this function unless you want to overwrite the current CSV file
@@ -41,6 +42,15 @@ def load_content():
     # Load subject data from directory
     subject_manager.load_subject_data()
 
+    if config.separation_mode == "strict_binary":
+        subject_manager.strict_binary_label()
+        
+        print_subject_info(subject_manager)
+        if len(subject_manager.subjects) == config.num_subjects:
+            print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
+        else:
+            print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
+    
 
     if config.debug == 1:
         print_subject_info(subject_manager)
@@ -120,13 +130,20 @@ def grid_search(subject_manager):
     # Log the best configuration
     logging.info(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
     print(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
-    
     # Visualization
     plt.figure(figsize=(10, 8))
-    sns.heatmap(results, xticklabels=np.round(topo_relative_weight_range, 2), yticklabels=np.round(learning_rate_range, 2), annot=True, fmt=".2f", cmap="viridis")
+    sns.heatmap(results, xticklabels=np.round(topo_relative_weight_range, 3), yticklabels=np.round(learning_rate_range, 3), annot=True, fmt=".3f", cmap="viridis")
     plt.title('Grid Search Results (ARI Score)')
     plt.xlabel('Top Relative Weight')
     plt.ylabel('Learning Rate')
+
+    # Get current date and time for the filename
+    current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    filename = f'Grid_Search_Results_ARI_Score_{current_time}.png'
+
+    # Save the figure
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+
     plt.show()
 
     return best_params, best_ari
