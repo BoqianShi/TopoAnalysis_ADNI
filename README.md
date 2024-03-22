@@ -15,6 +15,12 @@ This Master's project by Boqian Shi utilizes topological data analysis (TDA) to 
 
 ### Data Source
 - **Dataset:** fMRI and T1W images from the ADNI database.
+    - Total 117 subjects, all in numpy now:
+        1. AD - 27 subjects
+        2. CN - 32 subjects
+        3. LMCI - 23 subjects
+        4. MCI - 8 subjects
+        5. EMCI - 26 subjects
 - **Stages:** Covers various stages of cognitive impairment.
 
 ### Methodology Overview

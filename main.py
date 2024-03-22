@@ -46,7 +46,7 @@ def load_content():
         subject_manager.strict_binary_label()
         
         print_subject_info(subject_manager)
-        if len(subject_manager.subjects) == config.num_subjects:
+        if len(subject_manager.subjects) == config.num_strict_binary:
             print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
         else:
             print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
@@ -150,6 +150,10 @@ def grid_search(subject_manager):
 
 
 if __name__ == '__main__':
+    print(
+        "Project: Topological Clustering of Brain Networks\n"
+    )
+    print("separation_mode: ", config.separation_mode)
     print(f"Barcode Processing Mode: {'Component-based' if config.barcode_mode == 'component' else 'Cycle-based' if config.barcode_mode == 'cycle' else 'Attached (Component + Cycle)'}")
     print(f"Geometric Information Mode: {'Included' if config.geo_mode == 'geo_included' else 'Excluded (Topological Information Only)'}")
     print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")

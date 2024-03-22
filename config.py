@@ -16,6 +16,7 @@ groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
 
 # Total number of subjects
 num_subjects = 117
+num_strict_binary = 59
 
 # Barcode mode
 # Controls the way the barcode is computed
