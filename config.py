@@ -3,6 +3,12 @@
 # Author: Boqian Shi
 # Store all the global variables and configurations here
 
+# Separation mode
+# 1. AD + MCI + LMCI vs CN + EMCI
+# 2. AD vs CN (ignore the rest)
+
+
+
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
 

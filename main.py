@@ -96,8 +96,8 @@ def grid_search(subject_manager):
                         format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     # Define the range of values for learning_rate and top_relative_weight
-    learning_rate_range = np.linspace(0.01, 0.2, 10)  # From 0.01 to 0.2
-    topo_relative_weight_range = np.linspace(0.1, 0.99, 10)  # From 0.1 to 0.99
+    learning_rate_range = [0.01, 0.02, 0.03, 0.05, 0.07, 0.1, 0.12, 0.15, 0.2, 0.3]  # From 0.01 to 0.2
+    topo_relative_weight_range = [0.01, 0.05, 0.1, 0.15, 0.25, 0.35, 0.4, 0.5, 0.65, 0.75, 0.85, 0.95, 0.97, 0.99]  # From 0.1 to 0.99
 
     labels_true = subject_manager.get_labels()
     best_ari = -1  # Start with the worst possible score
