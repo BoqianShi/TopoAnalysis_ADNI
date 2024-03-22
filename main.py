@@ -44,13 +44,13 @@ def load_content():
 
     if config.separation_mode == "strict_binary":
         subject_manager.strict_binary_label()
+        if config.debug == 1:
+            print_subject_info(subject_manager)
+            if len(subject_manager.subjects) == config.num_strict_binary:
+                print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
+            else:
+                print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
         
-        print_subject_info(subject_manager)
-        if len(subject_manager.subjects) == config.num_strict_binary:
-            print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
-        else:
-            print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
-    
 
     if config.debug == 1:
         print_subject_info(subject_manager)
@@ -125,11 +125,11 @@ def grid_search(subject_manager):
             if ari_score > best_ari:
                 best_ari = ari_score
                 best_params = (lr, trw)
-            print(f"Learning Rate: {lr}, Top Relative Weight: {trw}, ARI: {ari_score}")
+            print(f"Learning Rate: {lr}, Topo Relative Weight: {trw}, ARI: {ari_score}")
 
     # Log the best configuration
-    logging.info(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
-    print(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Top Relative Weight: {best_params[1]}")
+    logging.info(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Topo Relative Weight: {best_params[1]}")
+    print(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Topo Relative Weight: {best_params[1]}")
     # Visualization
     plt.figure(figsize=(10, 8))
     sns.heatmap(results, xticklabels=np.round(topo_relative_weight_range, 3), yticklabels=np.round(learning_rate_range, 3), annot=True, fmt=".3f", cmap="viridis")
@@ -172,14 +172,14 @@ if __name__ == '__main__':
     else:
         n_clusters = 4
 
-    topo_relative_weight = 0.99  # 'topo_relative_weight' between 0 and 1
-    max_iter_alt = 300
-    max_iter_interp = 300
+    topo_relative_weight = 0.5  # 'topo_relative_weight' between 0 and 1
+    max_iter_alt = 500
+    max_iter_interp = 500
     learning_rate = 0.05
     grid_search(subject_manager)
 
     # Single test flag for single parameter testing
-    single_test = 0
+    single_test = 1
     if single_test == 1:
         clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
                                     max_iter_interp,
@@ -192,3 +192,5 @@ if __name__ == '__main__':
         print('Adjusted Rand Index:', ari_score)
         print(labels_pred)
         print(labels_true)
+    else:
+        grid_search()

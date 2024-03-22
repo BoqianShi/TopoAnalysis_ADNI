@@ -8,7 +8,7 @@
 #    AD + MCI + LMCI vs CN + EMCI
 # 2. strict_binary:
 #    AD vs CN (ignore the rest)
-separation_mode = "mixed_separation"
+separation_mode = "strict_binary"
 
 
 # Group names
