@@ -100,7 +100,7 @@ class clustering:
             # Compute and print loss as it is progressively decreasing
             loss = self._compute_top_dist(
                 X, self.centroids[assigned_centroids]).sum() / len(X)
-            print('Iteration: %d -> Loss: %f' % (it, loss))
+            # print('Iteration: %d -> Loss: %f' % (it, loss))
 
             if (prev_assigned_centroids == assigned_centroids).all():
                 break

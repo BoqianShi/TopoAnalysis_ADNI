@@ -103,3 +103,5 @@
 2024-03-21 20:08:50 - Best ARI: 0.03725932217172493 with Learning Rate: 0.1788888888888889 and Top Relative Weight: 0.1988888888888889
 2024-03-21 23:21:41 - Best ARI: 0.08944374550326316 with Learning Rate: 0.03111111111111111 and Top Relative Weight: 0.1
 2024-03-22 02:45:01 - Best ARI: 0.15480727118959764 with Learning Rate: 0.1366666666666667 and Top Relative Weight: 0.5944444444444444
+2024-03-22 04:17:55 - Best ARI: 0.34094690171202846 with Learning Rate: 0.3 and Topo Relative Weight: 0.4 (ignore_negative)
+2024-03-22 07:24:58 - Best ARI: 0.13792227688501288 with Learning Rate: 0.15 and Topo Relative Weight: 0.15
