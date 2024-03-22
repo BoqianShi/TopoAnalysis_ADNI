@@ -110,7 +110,7 @@ class SubjectLoader:
         Convert the label to binary.
         """
         for subject in self.subjects:
-            if subject.group == 'AD' or subject.group == 'EMCI':
+            if subject.group == 'AD' or subject.group == 'LMCI' or subject.group == 'MCI':
                 subject.group = 1
             else:
                 subject.group = 0

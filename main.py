@@ -97,15 +97,15 @@ def grid_search(subject_manager):
 
     # Define the range of values for learning_rate and top_relative_weight
     learning_rate_range = np.linspace(0.01, 0.2, 10)  # From 0.01 to 0.2
-    top_relative_weight_range = np.linspace(0.1, 0.99, 10)  # From 0.1 to 0.99
+    topo_relative_weight_range = np.linspace(0.1, 0.99, 10)  # From 0.1 to 0.99
 
     labels_true = subject_manager.get_labels()
     best_ari = -1  # Start with the worst possible score
     best_params = None
-    results = np.zeros((len(learning_rate_range), len(top_relative_weight_range)))  # To store ARI scores
+    results = np.zeros((len(learning_rate_range), len(topo_relative_weight_range)))  # To store ARI scores
 
     for i, lr in enumerate(learning_rate_range):
-        for j, trw in enumerate(top_relative_weight_range):
+        for j, trw in enumerate(topo_relative_weight_range):
             labels_pred = np.random.randint(0, 2, len(labels_true))  # Example random predictions
             clustering_model = src.clustering.clustering(subject_manager, n_clusters, trw, max_iter_alt, max_iter_interp, lr)
             labels_pred = clustering_model.fit_predict()
@@ -123,7 +123,7 @@ def grid_search(subject_manager):
     
     # Visualization
     plt.figure(figsize=(10, 8))
-    sns.heatmap(results, xticklabels=np.round(top_relative_weight_range, 2), yticklabels=np.round(learning_rate_range, 2), annot=True, fmt=".2f", cmap="viridis")
+    sns.heatmap(results, xticklabels=np.round(topo_relative_weight_range, 2), yticklabels=np.round(learning_rate_range, 2), annot=True, fmt=".2f", cmap="viridis")
     plt.title('Grid Search Results (ARI Score)')
     plt.xlabel('Top Relative Weight')
     plt.ylabel('Learning Rate')
@@ -133,8 +133,11 @@ def grid_search(subject_manager):
 
 
 if __name__ == '__main__':
-    print("Running on barcode mode: ", config.barcode_mode)
-    print("Running on geo mode: ", config.geo_mode)
+    print(f"Barcode Processing Mode: {'Component-based' if config.barcode_mode == 'component' else 'Cycle-based' if config.barcode_mode == 'cycle' else 'Attached (Component + Cycle)'}")
+    print(f"Geometric Information Mode: {'Included' if config.geo_mode == 'geo_included' else 'Excluded (Topological Information Only)'}")
+    print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
+    print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
+
     # Load subject information from CSV file
     subject_manager = load_content()
 
@@ -148,7 +151,7 @@ if __name__ == '__main__':
     else:
         n_clusters = 4
 
-    top_relative_weight = 0.99  # 'top_relative_weight' between 0 and 1
+    topo_relative_weight = 0.99  # 'topo_relative_weight' between 0 and 1
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
@@ -157,12 +160,14 @@ if __name__ == '__main__':
     # Single test flag for single parameter testing
     single_test = 0
     if single_test == 1:
-        clustering_model = src.clustering.clustering(subject_manager, n_clusters, top_relative_weight, max_iter_alt,
+        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
                                     max_iter_interp,
                                     learning_rate)
         labels_pred = clustering_model.fit_predict()
         labels_true = subject_manager.get_labels()
 
-        # Use Adjusted Rand Index
+        # Use Adjusted Rand Index score to evaluate the result
         ari_score = adjusted_rand_score(labels_true, labels_pred)
         print('Adjusted Rand Index:', ari_score)
+        print(labels_pred)
+        print(labels_true)
