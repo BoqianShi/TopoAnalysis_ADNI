@@ -28,7 +28,8 @@ class clustering:
     def fit_predict(self):
         """
         Computes topological clustering and predicts cluster index for each sample.
-        """        
+        """    
+        random.seed(config.random_seed)    
         # Since we are using HCI-MMP parcellation, the number of nodes is 360
         # MST only returns 359 edges, we have to minus one if we are not using geometric info
         if config.barcode_mode == "cycle":

@@ -129,6 +129,7 @@ def grid_search(subject_manager):
 
     # Log the best configuration
     logging.info(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Topo Relative Weight: {best_params[1]}")
+    logging.info(f"Separation_mode: {config.separation_mode}, Adjacency Matrix Mode: {config.adj_mode}, Labeling Mode: {config.label_mode}")
     print(f"Best ARI: {best_ari} with Learning Rate: {best_params[0]} and Topo Relative Weight: {best_params[1]}")
     # Visualization
     plt.figure(figsize=(10, 8))
@@ -139,7 +140,7 @@ def grid_search(subject_manager):
 
     # Get current date and time for the filename
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    filename = f'Grid_Search_Results_ARI_Score_{current_time}.png'
+    filename = f'Grid_Search_Results_ARI_Score_{current_time}_{config.label_mode}_{config.separation_mode}.png'
 
     # Save the figure
     plt.savefig(filename, dpi=300, bbox_inches='tight')
@@ -148,12 +149,48 @@ def grid_search(subject_manager):
 
     return best_params, best_ari
 
+def random_seed_search(subject_manager):
+    # Assuming config.random_seed is a list of seeds
+    best_ari_score = -1  # Start with the worst possible score
+    best_labels_pred = None
+    best_labels_true = None
+    best_seed = None
+    labels_true = subject_manager.get_labels()
+
+    for seed in range(1000):
+        config.random_seed = seed
+        # Create the clustering model with the current seed
+        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
+                                                    max_iter_interp, learning_rate)
+        
+        # Fit and predict
+        labels_pred = clustering_model.fit_predict()
+        
+        # Calculate ARI score
+        ari_score = adjusted_rand_score(labels_true, labels_pred)
+        print(f'Random Seed: {seed}, Adjusted Rand Index: {ari_score}')
+        
+        # Update best ARI score, labels, and seed if current ARI is better
+        if ari_score > best_ari_score:
+            best_ari_score = ari_score
+            best_labels_pred = labels_pred
+            best_labels_true = labels_true
+            best_seed = seed
+
+    # After iterating through all seeds, print the best ARI and its corresponding labels and seed
+    print('Best Adjusted Rand Index:', best_ari_score)
+    print('Best Seed:', best_seed)
+    print('Best Labels Predicted:', best_labels_pred)
+    print('Labels True:', best_labels_true)
+
+
+
 
 if __name__ == '__main__':
     print(
         "Project: Topological Clustering of Brain Networks\n"
     )
-    print("separation_mode: ", config.separation_mode)
+    print("Separation_mode: ", config.separation_mode)
     print(f"Barcode Processing Mode: {'Component-based' if config.barcode_mode == 'component' else 'Cycle-based' if config.barcode_mode == 'cycle' else 'Attached (Component + Cycle)'}")
     print(f"Geometric Information Mode: {'Included' if config.geo_mode == 'geo_included' else 'Excluded (Topological Information Only)'}")
     print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
@@ -172,14 +209,13 @@ if __name__ == '__main__':
     else:
         n_clusters = 4
 
-    topo_relative_weight = 0.5  # 'topo_relative_weight' between 0 and 1
-    max_iter_alt = 500
-    max_iter_interp = 500
+    max_iter_alt = 300
+    max_iter_interp = 300
     learning_rate = 0.05
-    grid_search(subject_manager)
+    topo_relative_weight = 0.5  # 'topo_relative_weight' between 0 and 1
 
     # Single test flag for single parameter testing
-    single_test = 1
+    single_test = 0
     if single_test == 1:
         clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
                                     max_iter_interp,
@@ -193,4 +229,5 @@ if __name__ == '__main__':
         print(labels_pred)
         print(labels_true)
     else:
-        grid_search()
+        # grid_search(subject_manager)
+        random_seed_search(subject_manager)

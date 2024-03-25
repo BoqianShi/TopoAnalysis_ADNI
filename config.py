@@ -10,7 +10,6 @@
 #    AD vs CN (ignore the rest)
 separation_mode = "strict_binary"
 
-
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
 
@@ -52,3 +51,6 @@ subject_csv_file = './matrix_subjects.csv'
 
 # debug flag
 debug = 0
+
+# Random seed
+random_seed = 42
