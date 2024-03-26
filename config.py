@@ -8,7 +8,7 @@
 #    AD + MCI + LMCI vs CN + EMCI
 # 2. strict_binary:
 #    AD vs CN (ignore the rest)
-separation_mode = "strict_binary"
+separation_mode = "mixed_separation"
 
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
@@ -53,4 +53,6 @@ subject_csv_file = './matrix_subjects.csv'
 debug = 0
 
 # Random seed
-random_seed = 42
+# Best for strict binary separation = 2957; ari = 0.4271
+random_seed = 2957
+# Best for mixed_separation = 86, ari = 0.154

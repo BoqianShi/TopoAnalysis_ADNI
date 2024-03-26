@@ -1,4 +1,4 @@
-# Topological Analysis on ADNI fMRI Data for Investigating Alzheimer's Disease Progression
+# Topological Analysis of ADNI fMRI Data for Investigating Alzheimer's Disease Progression
 
 ## Project Overview
 

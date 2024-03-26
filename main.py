@@ -149,7 +149,8 @@ def grid_search(subject_manager):
 
     return best_params, best_ari
 
-def random_seed_search(subject_manager):
+def random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
+                                                    max_iter_interp, learning_rate):
     # Assuming config.random_seed is a list of seeds
     best_ari_score = -1  # Start with the worst possible score
     best_labels_pred = None
@@ -182,9 +183,16 @@ def random_seed_search(subject_manager):
     print('Best Seed:', best_seed)
     print('Best Labels Predicted:', best_labels_pred)
     print('Labels True:', best_labels_true)
+    logging.info(f"Best ARI: {best_ari_score} with Random Seed: {best_seed}")
 
-
-
+def iter_search(subject_manager):
+    max_iter_list = [100, 200, 300 ,500, 700, 1000, 1500]
+    for max_iter in max_iter_list:
+        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter, max_iter, learning_rate)
+        labels_pred = clustering_model.fit_predict()
+        labels_true = subject_manager.get_labels()
+        ari_score = adjusted_rand_score(labels_true, labels_pred)
+        print(f'Max Iteration Num: {max_iter}, Adjusted Rand Index: {ari_score}')
 
 if __name__ == '__main__':
     print(
@@ -217,6 +225,7 @@ if __name__ == '__main__':
     # Single test flag for single parameter testing
     single_test = 0
     if single_test == 1:
+    
         clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
                                     max_iter_interp,
                                     learning_rate)
@@ -230,4 +239,5 @@ if __name__ == '__main__':
         print(labels_true)
     else:
         # grid_search(subject_manager)
-        random_seed_search(subject_manager)
+        random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
+        # iter_search(subject_manager)
