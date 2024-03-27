@@ -7,7 +7,7 @@
 **Program:** Master of Science in Computer Science  
 **Date:** Spring 2024
 
-This Master's project by Boqian Shi utilizes topological data analysis (TDA) to analyze functional Magnetic Resonance Imaging (fMRI) data from the Alzheimer's Disease Neuroimaging Initiative (ADNI). The goal is to uncover patterns in brain networks associated with Alzheimer's Disease progression, identifying key functional connections and network organizations.
+This Master's project by Boqian Shi implements a framework that utilizing topological data analysis (TDA) to analyze functional Magnetic Resonance Imaging (fMRI) data from the Alzheimer's Disease Neuroimaging Initiative (ADNI). The goal is to uncover patterns in brain networks associated with Alzheimer's Disease progression, identifying key functional connections and network organizations.
 
 ---
 
@@ -19,7 +19,7 @@ This Master's project by Boqian Shi utilizes topological data analysis (TDA) to 
         1. AD - 27 subjects
         2. CN - 32 subjects
         3. LMCI - 23 subjects
-        4. MCI - 8 subjects
+        4. MCI - 8 subjects (Treated as LMCI for the balancing purpose)
         5. EMCI - 26 subjects
 - **Stages:** Covers various stages of cognitive impairment.
 
@@ -45,6 +45,10 @@ This Master's project by Boqian Shi utilizes topological data analysis (TDA) to 
 ## Configuration with `config.py`
 
 `config.py` serves as the central configuration file for customizing the analysis process. It allows users to specify various parameters that control how data is processed and analyzed. Here's how you can use `config.py`:
+
+- **Separation mode**: Define how the data will be separated into different groups (`mixed_separation`, `strict_binary`) 
+    - **mixed_separation**: 2 groups: AD + MCI + LMCI **vs** CN + EMCI
+    - **strict_binary**: 2 groups: AD **vs** CN (ignore the rest)
 
 - **Group Names**: Define the groups of subjects (`AD`, `CN`, `LMCI`, `EMCI`, `MCI`) to include in the analysis.
 
