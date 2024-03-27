@@ -55,8 +55,10 @@ This Master's project by Boqian Shi implements a framework that utilizing topolo
 - **Number of Subjects**: Set the total number of subjects to analyze.
 
 - **Barcode Mode**: Choose the barcode computation mode (`component`, `cycle`, `attached`) to tailor the topological features extracted.
-    - **component**: Only use 0th Betti (which are the components) to perform the similarity matching.
+    - **component**: Only use 0th Betti (which are the components) to perform the similarity matching.  
+        - **Currently not supported**
     - **cycle**: Only use 1th Betti (which are the cycles) to perform the similarity matching.
+        - **Currently not supported**
     - **attached**: Simply attach the components and cycles together by:
         > attached = component + cycle
 
