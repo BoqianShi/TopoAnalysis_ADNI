@@ -87,8 +87,10 @@ To modify the analysis, edit the `config.py` file's variables according to your 
 ## Quick Start Guide
 
 1. **Prerequisite:** Ensure _scikit-learn_ is installed.
-2. **Configuration:** Adjust `config.py` as needed.
-3. **Execution:** Run `main.py` to start the analysis with your configurations.
+2. **Data Importation** Put `.npy` data files into the `data\`, change `matrix_subjects.csv` to include metadata infos.
+3. **Configuration:** Adjust `config.py` as needed.
+4. **Execution:** Run `main.py` to start the analysis with your configurations.
+
 
 ## Acknowledgments
 
