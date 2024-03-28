@@ -141,7 +141,7 @@ class SubjectLoader:
                 subject.group = 3
             else:
                 print("Error: Label mismatched on subject: ", subject.subject_id, " Please check the label.")
-
+            
 
     def get_subject_by_id(self, subject_id):
         """
@@ -177,4 +177,8 @@ class SubjectLoader:
         Returns:
             list: List of labels of the subjects.
         """
-        return [subject.group for subject in self.subjects]
+        labels_true = []
+        for subject in self.subjects:
+            labels_true.append(subject.group)
+            print("Subject ID: ", subject.subject_id, " Label: ", subject.group)
+        return labels_true

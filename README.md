@@ -70,6 +70,7 @@ This Master's project by Boqian Shi implements a framework that utilizing topolo
 - **Geometry Mode**: Decide whether to include geometric information (`geo_included`) or focus solely on topological aspects (`topo`).
     - **geo_included**: Use geometry information.
     - **topo**: Only use topological information (components and cycles).
+        - **Currently not supported**
 
 - **Label Mode**: Specify label configuration (`original`, `binary`) for your dataset.
     - **original**: Use 5 groups to recognize.

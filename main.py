@@ -44,13 +44,14 @@ def load_content():
 
     if config.separation_mode == "strict_binary":
         subject_manager.strict_binary_label()
+        if len(subject_manager.subjects) == config.num_strict_binary:
+            print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
+        else:
+            print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
+    
         if config.debug == 1:
             print_subject_info(subject_manager)
-            if len(subject_manager.subjects) == config.num_strict_binary:
-                print("All" , len(subject_manager.subjects), "subjects loaded successfully.")
-            else:
-                print("Error loading subjects, expected ", config.num_subjects, " but got ", len(subject_manager.subjects))
-        
+            
 
     if config.debug == 1:
         print_subject_info(subject_manager)
@@ -77,6 +78,7 @@ def generate_barcode(subject_manager):
         subject.set_barcode(barcode)
         # print(subject)
         
+# Plot the barcode of a single subject
 def plot_single_barcode(subject):
     barcode_data = subject.barcode
     if config.barcode_mode == "component":
@@ -87,20 +89,30 @@ def plot_single_barcode(subject):
         plot_component_barcode(barcode_data, "Component Barcode: " + subject.subject_id)
         plot_cycle_barcode(barcode_data, "Cycle Barcode: " + subject.subject_id)
 
+# Calculate the purity score
 def purity_score(labels_true, labels_pred):
     mtx = contingency_matrix(labels_true, labels_pred)
     return np.sum(np.amax(mtx, axis=0)) / np.sum(mtx)
 
+# Get the number of clusters based on the label mode
+def get_cluster_number():
+    
+    if config.label_mode == "binary":
+        return 2
+    else:
+        if config.separation_mode == "strict_binary":
+            return 2
+        else:
+            return 4
 
+# Grid search for the best parameters
+# Only deal with learning_rate and topo_relative_weight
 def grid_search(subject_manager):
     # Default variables
     max_iter_alt = 300
     max_iter_interp = 300
-    if config.label_mode == "binary":
-        n_clusters = 2
-    else:
-        n_clusters = 4
 
+    n_clusters = get_cluster_number()
     # Setup logging
     logging.basicConfig(filename='training_logs.txt', level=logging.INFO, 
                         format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -212,18 +224,15 @@ if __name__ == '__main__':
 
 
     # Topological clustering variables
-    if config.label_mode == "binary":
-        n_clusters = 2
-    else:
-        n_clusters = 4
+    n_clusters = get_cluster_number()
 
     max_iter_alt = 300
     max_iter_interp = 300
     learning_rate = 0.05
-    topo_relative_weight = 0.5  # 'topo_relative_weight' between 0 and 1
+    topo_relative_weight = 0.25  # 'topo_relative_weight' between 0 and 1
 
     # Single test flag for single parameter testing
-    single_test = 0
+    single_test = 1
     if single_test == 1:
     
         clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
@@ -239,5 +248,6 @@ if __name__ == '__main__':
         print(labels_true)
     else:
         # grid_search(subject_manager)
-        random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
+        # random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
         # iter_search(subject_manager)
+        pass

@@ -46,8 +46,8 @@ class clustering:
             self.weight_array = np.append(
                 np.repeat(1 - self.top_relative_weight, n_edges),
                 np.repeat(self.top_relative_weight, n_edges))
-        elif(config.geo_mode == "topo"):
-            self.weight_array = np.repeat(1 - self.top_relative_weight, n_edges)
+        #elif(config.geo_mode == "topo"):
+        #    self.weight_array = np.repeat(1 - self.top_relative_weight, n_edges)
         else:
             print("Geo Mode", config.geo_mode," not supported in fit_predict function")
 
@@ -113,6 +113,7 @@ class clustering:
         """
         Convert barcode to array X.
         """
+        
         X = []
         for subject in self.subject_loader.subjects:
             X.append(subject.barcode)
