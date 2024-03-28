@@ -24,7 +24,7 @@ class Subject:
         Args:
             data_dir (str): Directory containing the subject's data file.
         """
-        file_name = f"sub-{self.subject_id}_ds-36p_corr-pearson.npy"
+        file_name = f"sub-{self.subject_id}.npy"
         file_path = os.path.join(data_dir, file_name)
         if os.path.exists(file_path):
             self.data = np.load(file_path)
@@ -53,7 +53,7 @@ class SubjectLoader:
         """
         for file_name in os.listdir(config.data_dir):
             if file_name.endswith('.npy'):
-                subject_id = file_name.split('_')[0][4:]  # Extract the subject ID from the file name
+                subject_id = file_name[4:12]  # Extract the subject ID from the file name
                 subject = Subject(subject_id)
                 self.subjects.append(subject)
 
@@ -89,7 +89,7 @@ class SubjectLoader:
             csv_writer.writeheader()
 
             for subject in self.subjects:
-                data_file = os.path.join(config.data_dir, f"sub-{subject.subject_id}_ds-36p_corr-pearson.npy")
+                data_file = os.path.join(config.data_dir, f"sub-{subject.subject_id}.npy")
                 if os.path.exists(data_file):
                     row = {
                         'participant_id': subject.subject_id,
