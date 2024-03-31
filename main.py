@@ -129,7 +129,7 @@ def grid_search(subject_manager):
     for i, lr in enumerate(learning_rate_range):
         for j, trw in enumerate(topo_relative_weight_range):
             labels_pred = np.random.randint(0, 2, len(labels_true))  # Example random predictions
-            clustering_model = src.clustering.clustering(subject_manager, n_clusters, trw, max_iter_alt, max_iter_interp, lr)
+            clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, trw, max_iter_alt, max_iter_interp, lr)
             labels_pred = clustering_model.fit_predict()
             ari_score = adjusted_rand_score(labels_true, labels_pred)
             results[i, j] = ari_score
@@ -173,7 +173,7 @@ def random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_it
     for seed in range(1000):
         config.random_seed = seed
         # Create the clustering model with the current seed
-        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
+        clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
                                                     max_iter_interp, learning_rate)
         
         # Fit and predict
@@ -200,11 +200,45 @@ def random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_it
 def iter_search(subject_manager):
     max_iter_list = [100, 200, 300 ,500, 700, 1000, 1500]
     for max_iter in max_iter_list:
-        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter, max_iter, learning_rate)
+        clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter, max_iter, learning_rate)
         labels_pred = clustering_model.fit_predict()
         labels_true = subject_manager.get_labels()
         ari_score = adjusted_rand_score(labels_true, labels_pred)
         print(f'Max Iteration Num: {max_iter}, Adjusted Rand Index: {ari_score}')
+
+def k_centroids_test():
+    # Topological clustering variables
+    n_clusters = get_cluster_number()
+
+    max_iter_alt = 300
+    max_iter_interp = 300
+    learning_rate = 0.05
+    topo_relative_weight = 0.25  # 'topo_relative_weight' between 0 and 1
+
+    # Single test flag for single parameter testing
+    single_test = 1
+    if single_test == 1:
+    
+        clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
+                                    max_iter_interp,
+                                    learning_rate)
+        labels_pred = clustering_model.fit_predict()
+        labels_true = subject_manager.get_labels()
+
+        # Use Adjusted Rand Index score to evaluate the result
+        ari_score = adjusted_rand_score(labels_true, labels_pred)
+        print('Adjusted Rand Index:', ari_score)
+        print(labels_pred)
+        print(labels_true)
+    else:
+        # grid_search(subject_manager)
+        # random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
+        # iter_search(subject_manager)
+        clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
+                                    max_iter_interp,
+                                    learning_rate)
+        clustering_model.visualize_with_MDS()
+
 
 if __name__ == '__main__':
     print(
@@ -221,33 +255,6 @@ if __name__ == '__main__':
 
     # Generate barcode representation of the network
     generate_barcode(subject_manager=subject_manager)    
+    k_centroids_test()  
 
-
-    # Topological clustering variables
-    n_clusters = get_cluster_number()
-
-    max_iter_alt = 300
-    max_iter_interp = 300
-    learning_rate = 0.05
-    topo_relative_weight = 0.25  # 'topo_relative_weight' between 0 and 1
-
-    # Single test flag for single parameter testing
-    single_test = 1
-    if single_test == 1:
     
-        clustering_model = src.clustering.clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
-                                    max_iter_interp,
-                                    learning_rate)
-        labels_pred = clustering_model.fit_predict()
-        labels_true = subject_manager.get_labels()
-
-        # Use Adjusted Rand Index score to evaluate the result
-        ari_score = adjusted_rand_score(labels_true, labels_pred)
-        print('Adjusted Rand Index:', ari_score)
-        print(labels_pred)
-        print(labels_true)
-    else:
-        # grid_search(subject_manager)
-        # random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
-        # iter_search(subject_manager)
-        pass

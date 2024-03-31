@@ -34,7 +34,7 @@ adj_mode = "ignore_negative"
 # Geometry mode
 # Controls the way the geometric information is included
 # options: 1. "geo_included" -  geometric info included
-#          2. "topo" -  geometric info excluded (not implemented)
+#          2. "topo" -  geometric info excluded
 geo_mode = "geo_included"
 
 

@@ -2,7 +2,8 @@
 # Contains the clustering class that is used to perform topological clustering on the network data.
 # Author: Boqian Shi
 
-
+from sklearn.manifold import MDS
+import matplotlib.pyplot as plt
 import numpy as np
 import config
 import src.barcode
@@ -14,7 +15,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree
 from matplotlib import pyplot as plt
 
-class clustering:
+class k_centroids_clustering:
 
     def __init__(self, subject_loader, n_clusters, top_relative_weight, max_iter_alt,
                  max_iter_interp, learning_rate):
@@ -163,3 +164,51 @@ class clustering:
         sorted_temp_ind = np.argsort(nonmst[death_ind])
         sorted_death_ind = tuple(np.array(death_ind)[:, sorted_temp_ind])
         return sorted_birth_ind, sorted_death_ind
+
+    def visualize_with_MDS(self):
+        """
+        Visualizes the data points in a 2D plane by applying Multidimensional Scaling (MDS)
+        to the topological distances calculated by _compute_top_dist.
+        """
+        
+        X = self._barcode_to_array()  # Data array
+        assigned_centroids = X[random.sample(range(X.shape[0]), 1)]
+        # Calculate the pairwise topological distances matrix
+        if config.barcode_mode == "cycle":
+            n_node = 359 
+        elif config.barcode_mode == "attached":
+            n_node = 360
+        else:
+            print("Barcode Mode", config.barcode_mode," not supported in fit_predict function")
+        
+        n_edges = math.factorial(n_node) // math.factorial(2) // math.factorial(
+            n_node - 2)  # n_edges = (n_node choose 2)
+        self.weight_array = np.append(
+                np.repeat(1 - self.top_relative_weight, n_edges),
+                np.repeat(self.top_relative_weight, n_edges))
+        distances_matrix = np.zeros((len(X), len(X)))
+        for i in range(len(X)):
+            for j in range(len(X)):
+                if i != j:
+                    # Since _compute_top_dist expects specific shapes, adjust accordingly
+                    distance = self._compute_top_dist(X[i:i+1], X[j:j+1])
+                    distances_matrix[i, j] = distance
+                else:
+                    distances_matrix[i, j] = 0
+
+        # Apply MDS to convert distances into 2D coordinates
+        mds = MDS(n_components=2, dissimilarity="precomputed", random_state=42)
+        points_2d = mds.fit_transform(distances_matrix)
+        
+        # Plotting
+        plt.figure(figsize=(10, 7))
+        for cluster_id in np.unique(assigned_centroids):
+            indices = np.where(assigned_centroids == cluster_id)[0]
+            plt.scatter(points_2d[indices, 0], points_2d[indices, 1], label=f'Cluster {cluster_id}')
+
+        plt.title('Topological Clustering Visualization with MDS')
+        plt.xlabel('MDS Dimension 1')
+        plt.ylabel('MDS Dimension 2')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
