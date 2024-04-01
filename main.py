@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from datetime import datetime
+from paper_visuals.similarities import compute_dissimilarity_between_groups, visualize_similarity, calculate_group_averages
 
 # Write subject information into new CSV file
 # Do not use this function unless you want to overwrite the current CSV file
@@ -250,11 +251,29 @@ if __name__ == '__main__':
     print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
     print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
 
-    # Load subject information from CSV file
-    subject_manager = load_content()
+    subject_manager = SubjectLoader()
+    subject_manager.load_subject_data()
+    subject_manager.mci_correct()
+    group_averages = calculate_group_averages(subject_manager.subjects)
+    #print_subject_info(subject_manager)
+    dissimilarity_matrix, groups = compute_dissimilarity_between_groups(group_averages)
+    cn_average_dissimilarity = np.mean(dissimilarity_matrix[0])
+    print(f"Average Dissimilarity of CN group: {cn_average_dissimilarity}")
+    emci_average_dissimilarity = np.mean(dissimilarity_matrix[1])
+    print(f"Average Dissimilarity of EMCI group: {emci_average_dissimilarity}")
+    lmci_average_dissimilarity = np.mean(dissimilarity_matrix[2])
+    print(f"Average Dissimilarity of LMCI group: {lmci_average_dissimilarity}")
+    ad_average_dissimilarity = np.mean(dissimilarity_matrix[3])
+    print(f"Average Dissimilarity of AD group: {ad_average_dissimilarity}")
+    print(dissimilarity_matrix)
+    #max_dissimilarity = np.max(dissimilarity_matrix)
+    #similarity_matrix = 1 - (dissimilarity_matrix / max_dissimilarity)
+
+    # Visualize
+    # visualize_similarity(similarity_matrix, groups)
 
     # Generate barcode representation of the network
-    generate_barcode(subject_manager=subject_manager)    
-    k_centroids_test()  
+    # generate_barcode(subject_manager=subject_manager)    
+    # k_centroids_test()  
 
     

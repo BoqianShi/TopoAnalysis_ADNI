@@ -57,6 +57,15 @@ class SubjectLoader:
                 subject = Subject(subject_id)
                 self.subjects.append(subject)
 
+    def mci_correct(self):
+        """
+        Correct the MCI label to LMCI.
+        """
+        for subject in self.subjects:
+            if subject.group == 'MCI':
+                subject.group = 'LMCI'
+                
+                
     def load_subjects_from_csv(self, csv_file):
         """
         Updates subject information from a CSV file for existing subjects.

@@ -29,7 +29,7 @@ barcode_mode = "attached"
 # options: 1. "original"
 #          2. "ignore_negative"
 #          3. "absolute"
-adj_mode = "ignore_negative"
+adj_mode = "original"
 
 # Geometry mode
 # Controls the way the geometric information is included
