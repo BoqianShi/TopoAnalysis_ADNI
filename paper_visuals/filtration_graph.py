@@ -57,7 +57,7 @@ for idx, (step, subgraph) in enumerate(filtration_steps):
 ax[0].set_xlim(-0.5, len(filtration_steps) * 2 - 0.2)
 ax[0].set_ylim(-1, 1.5)
 ax[0].axis('off')
-ax[0].set_title('Filtration of Graphs')
+ax[0].set_title('Graph on Different Thresholds')
 
 
 components_over_time = {
@@ -78,13 +78,13 @@ ax[1].step(steps, counts, where='post', linewidth=2)
 # Set the limits and labels for the barcode plot
 ax[1].set_xlim(0, max_filtration_step + 1)
 ax[1].set_ylim(0, max(counts) + 1)
-ax[1].set_xlabel('Filtration step')
-ax[1].set_ylabel('# of Connected Components')
+ax[1].set_xlabel('Weight Threshold (w)')
+ax[1].set_ylabel('Beta_0')
 
 # Set the x-tick labels to reflect w_i notation
 ax[1].set_xticks(range(1, max_filtration_step + 1))
 ax[1].set_xticklabels([f'$w_{{{i}}}$' for i in range(1, max_filtration_step + 1)])
-ax[1].set_title('Barcode of Connected Components')
+ax[1].set_title('0D Barcode (Connected Components)')
 
 # Show the plot
 plt.tight_layout()

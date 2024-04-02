@@ -17,6 +17,9 @@ import numpy as np
 from datetime import datetime
 from paper_visuals.similarities import compute_dissimilarity_between_groups, visualize_similarity, calculate_group_averages
 
+from src.svm import run_svm_classification
+
+
 # Write subject information into new CSV file
 # Do not use this function unless you want to overwrite the current CSV file
 def write_current():
@@ -52,7 +55,7 @@ def load_content():
     
         if config.debug == 1:
             print_subject_info(subject_manager)
-            
+
 
     if config.debug == 1:
         print_subject_info(subject_manager)
@@ -64,6 +67,8 @@ def load_content():
     
     if config.label_mode == "binary":
         subject_manager.binary_label()
+    elif config.separation_mode == "cn_separation":
+        subject_manager.cn_separation_label()
     else:
         subject_manager.original_label()
 
@@ -101,7 +106,7 @@ def get_cluster_number():
     if config.label_mode == "binary":
         return 2
     else:
-        if config.separation_mode == "strict_binary":
+        if config.separation_mode == "strict_binary" or config.separation_mode == "cn_separation":
             return 2
         else:
             return 4
@@ -240,17 +245,7 @@ def k_centroids_test():
                                     learning_rate)
         clustering_model.visualize_with_MDS()
 
-
-if __name__ == '__main__':
-    print(
-        "Project: Topological Clustering of Brain Networks\n"
-    )
-    print("Separation_mode: ", config.separation_mode)
-    print(f"Barcode Processing Mode: {'Component-based' if config.barcode_mode == 'component' else 'Cycle-based' if config.barcode_mode == 'cycle' else 'Attached (Component + Cycle)'}")
-    print(f"Geometric Information Mode: {'Included' if config.geo_mode == 'geo_included' else 'Excluded (Topological Information Only)'}")
-    print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
-    print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
-
+def similarity_score():
     subject_manager = SubjectLoader()
     subject_manager.load_subject_data()
     subject_manager.mci_correct()
@@ -266,14 +261,31 @@ if __name__ == '__main__':
     ad_average_dissimilarity = np.mean(dissimilarity_matrix[3])
     print(f"Average Dissimilarity of AD group: {ad_average_dissimilarity}")
     print(dissimilarity_matrix)
-    #max_dissimilarity = np.max(dissimilarity_matrix)
-    #similarity_matrix = 1 - (dissimilarity_matrix / max_dissimilarity)
 
-    # Visualize
-    # visualize_similarity(similarity_matrix, groups)
+def svm_classification(subject_loader, l1, l2):
+    # Call the SVM classification function
+    average_cv_score, cv_scores = run_svm_classification(subject_loader.subjects, l1, l2, cv_folds=10)
 
+    print(f"Average Cross-Validation Score: {average_cv_score}")
+    print(f"CV Scores for Each Fold: {cv_scores}")
+
+
+if __name__ == '__main__':
+    print(
+        "\nProject: Topological Clustering of Brain Networks\n"
+    )
+    print("Separation_mode: ", config.separation_mode)
+    print(f"Barcode Processing Mode: {'Component-based' if config.barcode_mode == 'component' else 'Cycle-based' if config.barcode_mode == 'cycle' else 'Attached (Component + Cycle)'}")
+    print(f"Geometric Information Mode: {'Included' if config.geo_mode == 'geo_included' else 'Excluded (Topological Information Only)'}")
+    print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
+    print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
+
+    subject_manager = load_content()
     # Generate barcode representation of the network
-    # generate_barcode(subject_manager=subject_manager)    
+    generate_barcode(subject_manager=subject_manager)    
     # k_centroids_test()  
+    l1 = 1.1
+    l2 = 0.9
+    svm_classification(subject_manager, l1, l2)
 
     

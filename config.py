@@ -8,7 +8,9 @@
 #    AD + MCI + LMCI vs CN + EMCI
 # 2. strict_binary:
 #    AD vs CN (ignore the rest)
-separation_mode = "strict_binary"
+# 3. cn_separation:
+#    CN vs AD + MCI + LMCI + EMCI
+separation_mode = "mixed_separation"
 
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']
@@ -41,7 +43,7 @@ geo_mode = "geo_included"
 # Label mode
 # options: 1. "original"
 #          2. "binary"
-label_mode = "original"
+label_mode = "binary"
 
 # Directory containing the subject data files
 data_dir = './data'

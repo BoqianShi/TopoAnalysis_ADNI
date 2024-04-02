@@ -65,7 +65,7 @@ class SubjectLoader:
             if subject.group == 'MCI':
                 subject.group = 'LMCI'
                 
-                
+
     def load_subjects_from_csv(self, csv_file):
         """
         Updates subject information from a CSV file for existing subjects.
@@ -124,6 +124,15 @@ class SubjectLoader:
                 temp.append(subject)
         self.subjects = temp
 
+    def cn_separation_label(self):
+        """
+        Only keep CN subjects in group 1, and the rest in group 0.
+        """
+        for subject in self.subjects:
+            if subject.group == 'CN':
+                subject.group = 1
+            else:
+                subject.group = 0
 
     def binary_label(self):
         """
@@ -189,5 +198,5 @@ class SubjectLoader:
         labels_true = []
         for subject in self.subjects:
             labels_true.append(subject.group)
-            print("Subject ID: ", subject.subject_id, " Label: ", subject.group)
+            # print("Subject ID: ", subject.subject_id, " Label: ", subject.group)
         return labels_true
