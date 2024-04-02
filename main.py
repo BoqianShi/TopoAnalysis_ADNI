@@ -17,7 +17,7 @@ import numpy as np
 from datetime import datetime
 from paper_visuals.similarities import compute_dissimilarity_between_groups, visualize_similarity, calculate_group_averages
 
-from src.svm import run_svm_classification, plot_svm_data_distribution
+from src.svm import run_svm_classification
 
 
 # Write subject information into new CSV file

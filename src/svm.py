@@ -90,9 +90,12 @@ def lambda_adjustment(x_t, y_t, l1, l2):
 def tsne_svm(data, labels, l):
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(data)
-
+    if config.separation_mode == "strict_binary":
+        kernel = 'linear'
+    else:
+        kernel = 'rbf'
     # Train the SVM classifier
-    svc = SVC(kernel='linear')
+    svc = SVC(kernel=kernel, C=1, gamma='auto')
     svc.fit(data_scaled, labels)
 
     # Create a mesh to plot the decision boundary
@@ -107,7 +110,6 @@ def tsne_svm(data, labels, l):
     
     # Predict the labels using the trained model
     predicted_labels = svc.predict(data_scaled)
-
     # Calculate and print the ARI score
     ari_score = adjusted_rand_score(labels, predicted_labels)
     print(f"Adjusted Rand Index score: {ari_score:.4f} with lambda = {l:.4f}")

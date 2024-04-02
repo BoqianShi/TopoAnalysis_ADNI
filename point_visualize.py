@@ -6,6 +6,7 @@ from main import load_content
 import config
 from src.barcode import get_barcode
 from src.svm import tsne_svm
+
 # Function to extract barcode data and labels
 def extract_data(subject_loader, l = 0.5):
     data = []
@@ -14,12 +15,19 @@ def extract_data(subject_loader, l = 0.5):
     for subject in subject_loader.subjects:
         # subject.assign_label()
         # Set the barcode mode to config values
-        if subject.label == "AD" or subject.label == "CN":
+        if config.separation_mode == "strict_binary":
+            if subject.label == "AD" or subject.label == "CN":
+                barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = l)
+                subject.set_barcode(barcode)
+                data.append(subject.barcode)
+                labels.append(subject.label)
+        else:
             barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = l)
-            # plot_barcode(barcode)
             subject.set_barcode(barcode)
             data.append(subject.barcode)
             labels.append(subject.label)
+
+
     return np.array(data), labels
 
 def visualize_data_grid(subject_manager, l_list):
@@ -79,23 +87,29 @@ def visualize_data(data, labels, l):
 def plot(xx, yy, Z, data_scaled, labels, l):
     # print(Z)
     # Plot the decision boundary
+    plt.figure(figsize=(8, 6))
     plt.contourf(xx, yy, Z, cmap=plt.cm.coolwarm, alpha=0.8)
 
     # Plot also the data points
     scatter = plt.scatter(data_scaled[:, 0], data_scaled[:, 1], c=labels, cmap=plt.cm.coolwarm, edgecolors='k')
 
-    legend_labels = {0: 'AD', 1: 'CN'}
+    if config.separation_mode == "strict_binary":
+        legend_labels = {0: 'AD', 1: 'CN'}
+    else:
+        legend_labels = {0: 'AD + LMCI', 1: 'CN + EMCI'}
     handles, _ = scatter.legend_elements()
     plt.legend(handles, [legend_labels[label] for label in [0, 1]], title="Group")
-
-    plt.title(f'SVM Decision Boundary and Data Points (AD vs CN); lambda = {l:.4f})')
+    if config.separation_mode == "strict_binary":
+        plt.title(f'SVM Decision Boundary(AD vs CN); lambda = {l:.3f})')
+    else:
+        plt.title(f'SVM Decision Boundary(AD + LMCI vs CN + EMCI); lambda = {l:.4f})')
     plt.show()
 
 
-grid_search = 0
+grid_search = 1
 subject_manager = load_content()
 if grid_search:
-    l_list = np.arange(0.4, 0.6, 0.001)
+    l_list = np.arange(0.2, 0.3, 0.001)
     max_ari = 0
     for l in l_list:
         data, labels = extract_data(subject_manager, l)
@@ -105,11 +119,21 @@ if grid_search:
         transformed_data = tsne.fit_transform(data)
         temp = []
         for label in labels:
-            if label == "AD":
-                temp.append(0)
-            else:
-                temp.append(1)
-        
+            if config.separation_mode == "strict_binary":
+                if label == "AD":
+                    temp.append(0)
+                else:
+                    temp.append(1)
+            elif config.separation_mode == "cn_separation":
+                if label == "CN":
+                    temp.append(1)
+                else:
+                    temp.append(0)
+            elif config.separation_mode == "mixed_separation":
+                if label == "CN" or label == "EMCI":
+                    temp.append(1)
+                else:
+                    temp.append(0)
         ari_score, xx, yy, Z, data_scaled, _ = tsne_svm(transformed_data, temp, l)
         if ari_score > max_ari:
             max_ari = ari_score
@@ -121,8 +145,10 @@ if grid_search:
 
     plot(best_xx, best_yy, best_Z, best_data_scaled, temp, best_l)
 else:
-    # max l: 
+    # max l for strict binary: 
     # 0.423, 0.462
+    # max l for mixed separation:
+    # 0.261, 0.269
     l = 0.462
     data, labels = extract_data(subject_manager, l)
     # Visualize the data
@@ -130,9 +156,20 @@ else:
     transformed_data = tsne.fit_transform(data)
     temp = []
     for label in labels:
-        if label == "AD":
-            temp.append(0)
-        else:
-            temp.append(1)
+        if config.separation_mode == "strict_binary":
+            if label == "AD":
+                temp.append(0)
+            else:
+                temp.append(1)
+        elif config.separation_mode == "cn_separation":
+            if label == "CN":
+                temp.append(1)
+            else:
+                temp.append(0)
+        elif config.separation_mode == "mixed_separation":
+            if label == "CN" or label == "EMCI":
+                temp.append(1)
+            else:
+                temp.append(0)
     ari_score, xx, yy, Z, data_scaled, _ = tsne_svm(transformed_data, temp, l)
     plot(xx, yy, Z, data_scaled, temp, l)
