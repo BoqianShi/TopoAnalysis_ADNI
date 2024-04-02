@@ -17,7 +17,7 @@ import numpy as np
 from datetime import datetime
 from paper_visuals.similarities import compute_dissimilarity_between_groups, visualize_similarity, calculate_group_averages
 
-from src.svm import run_svm_classification
+from src.svm import run_svm_classification, plot_svm_data_distribution
 
 
 # Write subject information into new CSV file
@@ -113,7 +113,7 @@ def get_cluster_number():
 
 # Grid search for the best parameters
 # Only deal with learning_rate and topo_relative_weight
-def grid_search(subject_manager):
+def grid_search_centroids(subject_manager):
     # Default variables
     max_iter_alt = 300
     max_iter_interp = 300
@@ -212,8 +212,9 @@ def iter_search(subject_manager):
         ari_score = adjusted_rand_score(labels_true, labels_pred)
         print(f'Max Iteration Num: {max_iter}, Adjusted Rand Index: {ari_score}')
 
-def k_centroids_test():
+def k_centroids_test(subject_manager):
     # Topological clustering variables
+    generate_barcode(subject_manager=subject_manager)    
     n_clusters = get_cluster_number()
 
     max_iter_alt = 300
@@ -262,14 +263,105 @@ def similarity_score():
     print(f"Average Dissimilarity of AD group: {ad_average_dissimilarity}")
     print(dissimilarity_matrix)
 
+def svm_classification_grid_l1(subject_loader, l1, l2):
+    for subject in subject_loader.subjects:
+        # Set the barcode mode to config values
+        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.99)
+        # plot_barcode(barcode)
+        subject.set_barcode(barcode)
+    # Call the SVM classification function# Define your grid of values to search over
+    l1_values = np.arange(0.8, 1.2, 0.01)
+    # Perform grid search
+    best_accuracy = 0
+    best_l1_value = None
+
+    for l1_value in l1_values:
+        results = run_svm_classification(subject_loader.subjects, l1_value, l2, c_value = 1, cv_folds=5)
+        if results['average_score'] > best_accuracy:
+            best_accuracy = results['average_score']
+            best_l1_value = l1_value
+        print(f"Accuracy: {results['average_score']} with l1={l1_value}")
+
+    print(f"Best Average Accuracy: {best_accuracy} with l1={best_l1_value}")
+
+def svm_classification_grid_c(subject_loader, l1, l2):
+    for subject in subject_loader.subjects:
+        # Set the barcode mode to config values
+        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.99)
+        # plot_barcode(barcode)
+        subject.set_barcode(barcode)
+    # Call the SVM classification function# Define your grid of values to search over
+    c_values = [0.01, 0.1, 1, 10, 100, 1000]
+    # Perform grid search
+    best_accuracy = 0
+    best_c_value = None
+
+    for c_value in c_values:
+        results = run_svm_classification(subject_loader.subjects, l1, l2, c_value = c_value, cv_folds=5)
+        if results['average_score'] > best_accuracy:
+            best_accuracy = results['average_score']
+            best_c_value = c_value
+        print(f"Accuracy: {results['average_score']} with c={c_value}")
+
+    print(f"Best Average Accuracy: {best_accuracy} with c={best_c_value}")
+
+def svm_classification_grid_random(subject_loader, l1, l2):
+    for subject in subject_loader.subjects:
+        # Set the barcode mode to config values
+        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.99)
+        # plot_barcode(barcode)
+        subject.set_barcode(barcode)
+    # Call the SVM classification function# Define your grid of values to search over
+    random_seeds = range(100)
+    # Perform grid search
+    best_accuracy = 0
+    best_seed = None
+
+    for seed in random_seeds:
+        results = run_svm_classification(subject_loader.subjects, l1, l2, c_value = 1, cv_folds=5, random_state=seed)
+        if results['average_score'] > best_accuracy:
+            best_accuracy = results['average_score']
+            best_seed = seed
+        print(f"Accuracy: {results['average_score']} with seed={seed}")
+
+    print(f"Best Average Accuracy: {best_accuracy} with seed={best_seed}")
+
+
+def svm_classification_grid_lambda(subject_loader, l1, l2):
+    # Perform grid search
+    temp = subject_loader.subjects.copy()
+    lambda_values = np.arange(0, 0.99, 0.1)
+    best_accuracy = 0
+    best_l_value = None
+    for l in lambda_values:
+        for subject in temp:
+            # Set the barcode mode to config values
+            barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = l)
+            # plot_barcode(barcode)
+            subject.set_barcode(barcode)
+        # Call the SVM classification function# Define your grid of values to search over
+        results = run_svm_classification(temp, l1, l2, c_value = 1, cv_folds=5)
+        if results['average_score'] > best_accuracy:
+            best_accuracy = results['average_score']
+            best_l_value = l
+        print(f"Accuracy: {results['average_score']} with lambda={l}")
+
+    print(f"Best Average Accuracy: {best_accuracy} with l1={best_l_value}")
+
+
+
 def svm_classification(subject_loader, l1, l2):
-    # Call the SVM classification function
-    average_cv_score, cv_scores = run_svm_classification(subject_loader.subjects, l1, l2, cv_folds=10)
+    
+    for subject in subject_loader.subjects:
+        # Set the barcode mode to config values
+        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.462)
+        # plot_barcode(barcode)
+        subject.set_barcode(barcode)
+    results = run_svm_classification(subject_loader.subjects, l1, l2, c_value = 1, cv_folds=5)
 
-    print(f"Average Cross-Validation Score: {average_cv_score}")
-    print(f"CV Scores for Each Fold: {cv_scores}")
-
-
+    print(f"Average Cross-Validation Score: {results['average_score']}")
+    print(f"Cross-Validation Scores for Each Fold: {results['cv_scores']}") 
+    
 if __name__ == '__main__':
     print(
         "\nProject: Topological Clustering of Brain Networks\n"
@@ -281,11 +373,13 @@ if __name__ == '__main__':
     print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
 
     subject_manager = load_content()
-    # Generate barcode representation of the network
-    generate_barcode(subject_manager=subject_manager)    
-    # k_centroids_test()  
-    l1 = 1.1
-    l2 = 0.9
+    # k_centroids_test(subject_manager)  
+
+    # l1= 0.85, l2 = 0.94
+    # c = 1, l = 0.99, random_state = 0
+
+    l1 = 1
+    l2 = 1 
     svm_classification(subject_manager, l1, l2)
 
     

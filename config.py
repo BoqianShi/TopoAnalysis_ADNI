@@ -31,7 +31,7 @@ barcode_mode = "attached"
 # options: 1. "original"
 #          2. "ignore_negative"
 #          3. "absolute"
-adj_mode = "original"
+adj_mode = "ignore_negative"
 
 # Geometry mode
 # Controls the way the geometric information is included
@@ -43,7 +43,7 @@ geo_mode = "geo_included"
 # Label mode
 # options: 1. "original"
 #          2. "binary"
-label_mode = "binary"
+label_mode = "original"
 
 # Directory containing the subject data files
 data_dir = './data'

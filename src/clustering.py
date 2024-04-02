@@ -52,7 +52,7 @@ class k_centroids_clustering:
         else:
             print("Geo Mode", config.geo_mode," not supported in fit_predict function")
 
-        X = self._barcode_to_array()
+        X = self.barcode_to_array()
         
         # Random initial condition
         self.centroids = X[random.sample(range(X.shape[0]), self.n_clusters)]
@@ -110,7 +110,7 @@ class k_centroids_clustering:
                 prev_assigned_centroids = assigned_centroids
         return assigned_centroids
 
-    def _barcode_to_array(self):
+    def barcode_to_array(self):
         """
         Convert barcode to array X.
         """

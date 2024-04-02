@@ -11,12 +11,19 @@ import numpy as np
 class Subject:
     def __init__(self, subject_id, group=None):
         self.subject_id = subject_id
+        self.label = None
         self.group = group
         self.sex = None
         self.age = None
         self.data = None
         self.barcode = None
 
+    def assign_label(self):
+        if self.group == "MCI":
+            self.label = "LMCI"
+        else:
+            self.label = self.group
+    
     def load_data(self, data_dir):
         """
         Loads the data for the subject from the specified directory.
@@ -83,6 +90,7 @@ class SubjectLoader:
                     subject = self.get_subject_by_id(subject_id)
                     if subject:
                         subject.group = row.get('group')
+                        subject.assign_label()
 
     def save_subjects_to_csv(self, output_file):
         """
