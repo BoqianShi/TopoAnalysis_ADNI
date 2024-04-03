@@ -91,7 +91,7 @@ def plot(xx, yy, Z, data_scaled, labels, l):
     plt.contourf(xx, yy, Z, cmap=plt.cm.coolwarm, alpha=0.8)
 
     # Plot also the data points
-    scatter = plt.scatter(data_scaled[:, 0], data_scaled[:, 1], c=labels, cmap=plt.cm.coolwarm, edgecolors='k')
+    scatter = plt.scatter(data_scaled[:, 0], data_scaled[:, 1], c=labels, cmap=plt.cm.coolwarm, edgecolors='k', s=100)
 
     if config.separation_mode == "strict_binary":
         legend_labels = {0: 'AD', 1: 'CN'}
@@ -106,7 +106,7 @@ def plot(xx, yy, Z, data_scaled, labels, l):
     plt.show()
 
 
-grid_search = 1
+grid_search = 0
 subject_manager = load_content()
 if grid_search:
     l_list = np.arange(0.2, 0.3, 0.001)
@@ -149,7 +149,7 @@ else:
     # 0.423, 0.462
     # max l for mixed separation:
     # 0.261, 0.269
-    l = 0.462
+    l = 0.261
     data, labels = extract_data(subject_manager, l)
     # Visualize the data
     tsne = TSNE(n_components=2, random_state=42)

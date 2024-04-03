@@ -378,8 +378,8 @@ if __name__ == '__main__':
     # l1= 0.85, l2 = 0.94
     # c = 1, l = 0.99, random_state = 0
 
-    l1 = 1
-    l2 = 1 
+    l1 = 0.85
+    l2 = 0.94
     svm_classification(subject_manager, l1, l2)
 
     
