@@ -10,7 +10,7 @@
 #    AD vs CN (ignore the rest)
 # 3. cn_separation:
 #    CN vs AD + MCI + LMCI + EMCI
-separation_mode = "mixed_separation"
+separation_mode = "strict_binary"
 
 # Group names
 groups = ['AD', 'CN', 'LMCI', 'EMCI', 'MCI']

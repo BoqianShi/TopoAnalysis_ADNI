@@ -5,8 +5,8 @@ plt.rcParams.update({'font.size': 18})  # Adjust the number to your desired font
 
 G = nx.Graph()
 edges_with_weights = [
-    (1, 2, 4), (1, 4, 2), (3, 5, 5), (2, 5, 5), (4, 3, 6), 
-    (1, 5, 5), (4, 5, 6), (3, 5, 6), (2, 3, 6), (3, 5, 3)
+    (1, 2, 3), (1, 4, 2), (2, 5, 5), (4, 3, 6), 
+    (1, 5, 5), (4, 5, 6), (2, 3, 6), (3, 5, 4)
 ]
 G.add_weighted_edges_from(edges_with_weights)
 pos = {

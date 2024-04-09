@@ -149,7 +149,7 @@ else:
     # 0.423, 0.462
     # max l for mixed separation:
     # 0.261, 0.269
-    l = 0.261
+    l = 0.461
     data, labels = extract_data(subject_manager, l)
     # Visualize the data
     tsne = TSNE(n_components=2, random_state=42)
