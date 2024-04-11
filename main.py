@@ -175,8 +175,10 @@ def random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_it
     best_labels_true = None
     best_seed = None
     labels_true = subject_manager.get_labels()
-
-    for seed in range(1000):
+    
+    sum_aris = 0
+    aris_list = []
+    for seed in range(100):
         config.random_seed = seed
         # Create the clustering model with the current seed
         clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
@@ -195,12 +197,15 @@ def random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_it
             best_labels_pred = labels_pred
             best_labels_true = labels_true
             best_seed = seed
-
+        sum_aris += ari_score
+        aris_list.append(ari_score)
     # After iterating through all seeds, print the best ARI and its corresponding labels and seed
     print('Best Adjusted Rand Index:', best_ari_score)
     print('Best Seed:', best_seed)
-    print('Best Labels Predicted:', best_labels_pred)
-    print('Labels True:', best_labels_true)
+    print('Average ARI:', sum_aris / 100)
+    print('variance:', np.var(aris_list))
+    #print('Best Labels Predicted:', best_labels_pred)
+    #print('Labels True:', best_labels_true)
     logging.info(f"Best ARI: {best_ari_score} with Random Seed: {best_seed}")
 
 def iter_search(subject_manager):
@@ -223,7 +228,7 @@ def k_centroids_test(subject_manager):
     topo_relative_weight = 0.25  # 'topo_relative_weight' between 0 and 1
 
     # Single test flag for single parameter testing
-    single_test = 1
+    single_test = 0
     if single_test == 1:
     
         clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
@@ -239,18 +244,15 @@ def k_centroids_test(subject_manager):
         print(labels_true)
     else:
         # grid_search(subject_manager)
-        # random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
+        random_seed_search(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,max_iter_interp,learning_rate)
         # iter_search(subject_manager)
-        clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt,
-                                    max_iter_interp,
-                                    learning_rate)
-        clustering_model.visualize_with_MDS()
+        # clustering_model = src.clustering.k_centroids_clustering(subject_manager, n_clusters, topo_relative_weight, max_iter_alt, max_iter_interp, learning_rate)
 
 def similarity_score():
     subject_manager = SubjectLoader()
     subject_manager.load_subject_data()
     subject_manager.mci_correct()
-    group_averages = calculate_group_averages(subject_manager.subjects)
+    group_averages = calculate_group_averages(subject_manager.subjects, config.adj_mode)
     #print_subject_info(subject_manager)
     dissimilarity_matrix, groups = compute_dissimilarity_between_groups(group_averages)
     cn_average_dissimilarity = np.mean(dissimilarity_matrix[0])
@@ -354,10 +356,10 @@ def svm_classification(subject_loader, l1, l2):
     
     for subject in subject_loader.subjects:
         # Set the barcode mode to config values
-        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.462)
+        barcode = get_barcode(subject.data, barcode_mode=config.barcode_mode, adj_mode=config.adj_mode, l = 0.5)
         # plot_barcode(barcode)
         subject.set_barcode(barcode)
-    results = run_svm_classification(subject_loader.subjects, l1, l2, c_value = 1, cv_folds=5)
+    results = run_svm_classification(subject_loader.subjects, l1, l2, c_value = 1, cv_folds=5, random_state = 0)
 
     print(f"Average Cross-Validation Score: {results['average_score']}")
     print(f"Cross-Validation Scores for Each Fold: {results['cv_scores']}") 
@@ -372,14 +374,20 @@ if __name__ == '__main__':
     print(f"Adjacency Matrix Mode: {'Original' if config.adj_mode == 'original' else 'Ignore Negative Edges' if config.adj_mode == 'ignore_negative' else 'Absolute Values'}")
     print(f"Labeling Mode: {'Original Labels' if config.label_mode == 'original' else 'Binary Labels'}")
 
+    # The following code calculates the similarity between the group averages
+    # similarity_score()
+
+    # The following code tests the k-centroids clustering algorithm
     subject_manager = load_content()
-    # k_centroids_test(subject_manager)  
+    k_centroids_test(subject_manager)  
 
-    # l1= 0.85, l2 = 0.94
-    # c = 1, l = 0.99, random_state = 0
 
-    l1 = 0.85
-    l2 = 0.94
-    svm_classification(subject_manager, l1, l2)
+
+
+    # The following code tests the svm classification algorithm
+
+    l1 = 1
+    l2 = 1
+    # svm_classification(subject_manager, l1, l2)
 
     

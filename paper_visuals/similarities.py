@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
 
+
 def set_mode(adj, mode='original'):
     if mode == 'ignore_negative':
         adj = np.where(adj < 0, 0, adj)
@@ -9,11 +10,11 @@ def set_mode(adj, mode='original'):
         adj = np.abs(adj)
     return adj
 
-def calculate_group_averages(subjects):
+def calculate_group_averages(subjects, input_mode='original'):
     """
     Calculate the average adjacency matrix for each group.
     """
-    mode = "original"
+    mode = input_mode
     group_matrices = {'AD': [], 'LMCI': [], 'EMCI': [], 'CN': []}
     for subject in subjects:
         group_matrices[subject.group].append(set_mode(subject.data, mode))

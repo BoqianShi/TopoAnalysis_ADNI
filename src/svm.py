@@ -92,6 +92,8 @@ def tsne_svm(data, labels, l):
     data_scaled = scaler.fit_transform(data)
     if config.separation_mode == "strict_binary":
         kernel = 'linear'
+    elif config.separation_mode == "cn_separation":
+        kernel = 'poly'
     else:
         kernel = 'rbf'
     # Train the SVM classifier

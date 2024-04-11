@@ -35,7 +35,7 @@ for idx, (step, subgraph) in enumerate(filtration_steps):
     
     nx.draw_networkx_nodes(subgraph, pos=subpos, ax=ax[0], node_size=50)
     nx.draw_networkx_edges(subgraph, pos=subpos, ax=ax[0])
-    ax[0].text(reversed_idx * 2 + 0.5, -0.5, f'$G_{{w_{7-step}}}$', horizontalalignment='center')
+    ax[0].text(reversed_idx * 2 + 0.5, -0.5, f'$G_{{𝜺_{7-step}}}$', horizontalalignment='center')
 
 ax[0].set_xlim(-0.5, len(filtration_steps) * 2 - 0.2)
 ax[0].set_ylim(-1, 1.5)
@@ -63,12 +63,12 @@ ax[1].step(steps, counts, where='post', linewidth=2)
 # Set the limits and labels for the barcode plot
 ax[1].set_xlim(0, max_filtration_step + 0.5)
 ax[1].set_ylim(0, max(counts) + 1)
-ax[1].set_xlabel('Weight Threshold (w)')
-ax[1].set_ylabel('Beta_0')
+ax[1].set_xlabel('Weight Threshold')
+ax[1].set_ylabel('$𝜷_0$')
 
 # Set the x-tick labels to reflect w_i notation
 ax[1].set_xticks(range(1, max_filtration_step + 1))
-ax[1].set_xticklabels([f'$w_{{{i}}}$' for i in range(1, max_filtration_step + 1)])
+ax[1].set_xticklabels([f'$𝜺_{{{i}}}$' for i in range(1, max_filtration_step + 1)])
 ax[1].set_title('0D Barcode (Connected Components)')
 
 # Show the plot

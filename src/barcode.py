@@ -108,16 +108,21 @@ def get_barcode(adj, barcode_mode = "attached", adj_mode = "ignore_negative", l 
         else:
             print("invalid mode in barcode generation in topo-only mode")
     else: 
-        vec = adj[np.triu_indices(adj.shape[0], k=1)]
-        vec_scaled = vec * (1 - l)
-    
-    # Assuming compute_mst_sets(mst) and compute_nonmst_sets(nonmst) return numpy arrays
-        mst_scaled = compute_mst_sets(mst) * l
-        nonmst_scaled = compute_nonmst_sets(nonmst) * l  # If you need to multiply this by l, do it here similarly
+        if l == 1:
+            vec = adj[np.triu_indices(adj.shape[0], k=1)]
+            return np.concatenate((vec, compute_mst_sets(mst), compute_nonmst_sets(nonmst)), axis=0)
+        else: 
+            # print("lambda changed", l)
+            vec = adj[np.triu_indices(adj.shape[0], k=1)]
+            vec_scaled = vec * (1 - l)
         
-        # Use np.concatenate with a tuple containing all arrays to concatenate
-        barcode = np.concatenate((vec_scaled, mst_scaled, nonmst_scaled), axis=0)
-        return barcode
+        # Assuming compute_mst_sets(mst) and compute_nonmst_sets(nonmst) return numpy arrays
+            mst_scaled = compute_mst_sets(mst) * l
+            nonmst_scaled = compute_nonmst_sets(nonmst) * l  # If you need to multiply this by l, do it here similarly
+            
+            # Use np.concatenate with a tuple containing all arrays to concatenate
+            barcode = np.concatenate((vec_scaled, mst_scaled, nonmst_scaled), axis=0)
+            return barcode
 
 
 
